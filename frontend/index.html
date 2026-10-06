@@ -1,0 +1,1835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Job Search & Application Assistant - Sleek Dashboard</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #080c14;
+            --card-bg: #121929;
+            --card-border: rgba(255, 255, 255, 0.08);
+            --card-hover: rgba(99, 102, 241, 0.12);
+            --primary: #6366f1;
+            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
+            --secondary-gradient: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+            --accent-green: #10b981;
+            --accent-cyan: #06b6d4;
+            --accent-purple: #a855f7;
+            --accent-amber: #f59e0b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(168, 85, 247, 0.12) 0px, transparent 50%),
+                radial-gradient(at 50% 100%, rgba(6, 182, 212, 0.1) 0px, transparent 50%);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding-bottom: 4rem;
+        }
+
+        /* Glassmorphism Header */
+        header {
+            background: rgba(18, 25, 41, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--card-border);
+            padding: 1.2rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo {
+            width: 42px;
+            height: 42px;
+            background: var(--primary-gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .header-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .status-pill {
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #34d399;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #10b981;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Step Card */
+        .step-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .step-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--primary-gradient);
+            opacity: 0.8;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 1.5rem;
+        }
+
+        .step-badge {
+            background: var(--primary-gradient);
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 800;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        .step-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        /* Mode Switcher Tabs */
+        .tab-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 1.2rem;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 4px;
+            border-radius: 10px;
+            width: fit-content;
+        }
+
+        .tab-btn {
+            background: transparent;
+            color: var(--text-muted);
+            border: none;
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        /* Dropzone */
+        .upload-box {
+            border: 2px dashed rgba(99, 102, 241, 0.35);
+            background: rgba(99, 102, 241, 0.04);
+            border-radius: 14px;
+            padding: 2.5rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .upload-box:hover {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .upload-icon {
+            font-size: 42px;
+            margin-bottom: 10px;
+        }
+
+        /* Quick Chips */
+        .chip-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .chip {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            color: var(--text-muted);
+            padding: 5px 12px;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .chip:hover {
+            background: rgba(99, 102, 241, 0.2);
+            color: #a5b4fc;
+            border-color: rgba(99, 102, 241, 0.4);
+        }
+
+        /* Success Profile Box */
+        .profile-result {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(6, 182, 212, 0.08) 100%);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 14px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 1rem;
+        }
+
+        .avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: white;
+        }
+
+        .profile-name {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .skill-tag {
+            display: inline-block;
+            background: rgba(99, 102, 241, 0.15);
+            color: #c084fc;
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            margin-right: 6px;
+            margin-top: 6px;
+        }
+
+        /* Form Inputs */
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 1.2rem;
+        }
+
+        @media (max-width: 900px) {
+            .input-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        @media (max-width: 550px) {
+            .input-grid { grid-template-columns: 1fr; }
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .input-field {
+            width: 100%;
+            background: #080c14;
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            padding: 13px 16px;
+            color: white;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .input-field:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .main-btn {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 800;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1.5rem;
+            box-shadow: 0 6px 25px rgba(99, 102, 241, 0.35);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .main-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.5);
+        }
+
+        .main-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Job Card */
+        .job-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius);
+            padding: 1.8rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+            transition: border-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .job-card:hover {
+            border-color: rgba(99, 102, 241, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .job-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            gap: 1rem;
+        }
+
+        .job-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+            color: #ffffff;
+        }
+
+        .job-company {
+            color: var(--accent-cyan);
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-top: 4px;
+        }
+
+        .match-badge {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: #34d399;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 1rem;
+            white-space: nowrap;
+        }
+
+        .match-badge.medium {
+            background: rgba(6, 182, 212, 0.15);
+            border-color: rgba(6, 182, 212, 0.4);
+            color: #38bdf8;
+        }
+
+        .job-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            background: rgba(255, 255, 255, 0.06);
+            color: white;
+            border: 1px solid var(--card-border);
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .action-btn-primary {
+            background: var(--primary-gradient);
+            border: none;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .action-btn-primary:hover {
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+        }
+
+        /* Modal Overlay */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-box {
+            background: #121929;
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius);
+            max-width: 800px;
+            width: 100%;
+            max-height: 88vh;
+            overflow-y: auto;
+            padding: 2rem;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .copy-btn {
+            background: rgba(99, 102, 241, 0.2);
+            color: #a5b4fc;
+            border: 1px solid rgba(99, 102, 241, 0.4);
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .copy-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Toast Popup */
+        .toast {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #10b981;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            display: none;
+            z-index: 300;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <div class="brand-box">
+                <div class="brand-logo">🚀</div>
+                <div>
+                    <div class="header-title">AI Job Search & Application Assistant</div>
+                    <div class="header-subtitle">Multi-Platform Vacancy Matcher, Resume Parser & Smart Application Generator</div>
+                </div>
+            </div>
+            <div class="status-pill">
+                <div class="status-dot"></div>
+                <span>Server Online</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- Internship Portfolio Analytics Header Stats Bar -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 15px; margin-bottom: 2rem;">
+            <div class="step-card" style="padding: 1.2rem; display: flex; align-items: center; gap: 12px; margin: 0;">
+                <div style="font-size: 2rem;">⚡</div>
+                <div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase;">Job Platforms</div>
+                    <div style="font-size: 1.1rem; font-weight: 800; color: white;">8+ Multi-Portals</div>
+                </div>
+            </div>
+            <div class="step-card" style="padding: 1.2rem; display: flex; align-items: center; gap: 12px; margin: 0;">
+                <div style="font-size: 2rem;">🎯</div>
+                <div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase;">Match Accuracy</div>
+                    <div style="font-size: 1.1rem; font-weight: 800; color: var(--accent-green);">Deterministic ATS</div>
+                </div>
+            </div>
+            <div class="step-card" style="padding: 1.2rem; display: flex; align-items: center; gap: 12px; margin: 0;">
+                <div style="font-size: 2rem;">💼</div>
+                <div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase;">Application Kits</div>
+                    <div style="font-size: 1.1rem; font-weight: 800; color: var(--accent-cyan);">Instant Auto-Gen</div>
+                </div>
+            </div>
+            <div class="step-card" style="padding: 1.2rem; display: flex; align-items: center; gap: 12px; margin: 0; border: 1px solid rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.05);">
+                <div style="font-size: 2rem;">✅</div>
+                <div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase;">Applied Jobs</div>
+                    <div id="appliedCountStat" style="font-size: 1.1rem; font-weight: 800; color: #34d399;">0 Tracked</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 1: Candidate Profile / Resume -->
+        <div class="step-card">
+            <div class="step-header">
+                <div class="step-badge">1</div>
+                <div class="step-title">Upload Candidate Resume or Paste Text</div>
+            </div>
+
+            <div class="tab-bar">
+                <button class="tab-btn active" id="tabUpload" onclick="switchResumeTab('file')">📄 Upload PDF / File</button>
+                <button class="tab-btn" id="tabPaste" onclick="switchResumeTab('text')">✏️ Paste Text</button>
+            </div>
+
+            <!-- File Upload Section -->
+            <div id="fileSection">
+                <div class="upload-box" onclick="document.getElementById('fileInput').click()">
+                    <div class="upload-icon">📂</div>
+                    <div style="font-size: 1.1rem; font-weight: 700;">Click Here To Select PDF Resume File</div>
+                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 6px;">Supports .pdf and .txt files • Automatically parses skills, education & experience</div>
+                    <div id="fileBadge" style="display: none; margin-top: 12px; font-weight: 800; color: #34d399; background: rgba(16, 185, 129, 0.15); padding: 8px 14px; border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.3);"></div>
+                    <input type="file" id="fileInput" accept=".pdf,.txt" style="display: none;" onchange="uploadFile(event)">
+                </div>
+            </div>
+
+            <!-- Text Paste Section -->
+            <div id="textSection" style="display: none;">
+                <label style="font-size: 0.85rem; color: var(--text-muted); font-weight: 700;">PASTE RESUME CONTENT HERE:</label>
+                <textarea id="pasteText" class="input-field" placeholder="Paste resume text (Name, Education, Skills, Work Experience)..." style="min-height: 100px; margin-top: 6px;"></textarea>
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <button class="action-btn action-btn-primary" onclick="analyzeText()" style="flex: 1; justify-content: center;">🔍 Analyze Resume Text</button>
+                    <button class="action-btn" onclick="fillSampleResume()" style="justify-content: center; background: rgba(255, 255, 255, 0.06); color: var(--text-muted);" title="Use sample resume data to quickly test the application features">⚡ Try Quick Sample Demo Resume</button>
+                </div>
+            </div>
+
+            <!-- Profile Summary Box -->
+            <div id="profileBox" class="profile-result">
+                <div style="font-size: 0.8rem; font-weight: 800; color: var(--accent-green); text-transform: uppercase; margin-bottom: 8px;">✅ RESUME LOADED & PARSED SUCCESSFULLY</div>
+                <div class="profile-header">
+                    <div class="avatar" id="pAvatar">C</div>
+                    <div>
+                        <div class="profile-name" id="pName">Candidate Profile</div>
+                        <div style="font-size: 0.88rem; color: var(--text-muted);" id="pContact">Email & Phone</div>
+                        <div style="font-size: 0.88rem; color: var(--accent-cyan); margin-top: 2px;" id="pEdu">Degree & University</div>
+                    </div>
+                </div>
+                <div style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 10px; line-height: 1.4;" id="pSummary">Executive Summary...</div>
+                <div>
+                    <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); display: block;">EXTRACTED SKILLS & TOOLS:</span>
+                    <div id="pSkills" style="margin-top: 4px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 2: Job Preferences -->
+        <div class="step-card">
+            <div class="step-header">
+                <div class="step-badge">2</div>
+                <div class="step-title">Enter Target Job Search Details</div>
+            </div>
+
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Target Role / Title</label>
+                    <input type="text" id="roleInput" class="input-field" value="" placeholder="Type target role (e.g. Data Analyst, Python Dev)...">
+                    <div class="chip-group">
+                        <span class="chip" onclick="setRole('Data Analyst')">Data Analyst</span>
+                        <span class="chip" onclick="setRole('Python Developer')">Python Dev</span>
+                        <span class="chip" onclick="setRole('Business Analyst')">Business Analyst</span>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>City / Location</label>
+                    <input type="text" id="locInput" class="input-field" value="" placeholder="Enter city name (e.g. Mumbai, Indore, Bangalore, Remote)...">
+                    <div class="chip-group">
+                        <span class="chip" onclick="setLoc('Mumbai')">Mumbai</span>
+                        <span class="chip" onclick="setLoc('Indore')">Indore</span>
+                        <span class="chip" onclick="setLoc('Bangalore')">Bangalore</span>
+                        <span class="chip" onclick="setLoc('Remote')">Remote</span>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Work Mode</label>
+                    <select id="modeInput" class="input-field">
+                        <option value="On-site">On-site</option>
+                        <option value="Hybrid">Hybrid</option>
+                        <option value="Remote">Remote</option>
+                        <option value="Any">Any</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Experience Level</label>
+                    <select id="expInput" class="input-field">
+                        <option value="Fresher">Fresher / Entry Level</option>
+                        <option value="Junior">Junior (1-3 Yrs)</option>
+                        <option value="Mid">Mid Level (3-5 Yrs)</option>
+                        <option value="Senior">Senior (5+ Yrs)</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="main-btn" id="findBtn" onclick="findJobs()">
+                🔍 FIND MATCHING JOBS ACROSS PLATFORMS
+            </button>
+        </div>
+
+        <!-- STEP 3: Results Section (Hidden initially until user searches) -->
+        <div id="resultsSection" style="display: none; margin-top: 2rem;">
+            <div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <div>
+                    <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.5rem;">💼 Matched Vacancies</h2>
+                    <div style="display: flex; gap: 6px; margin-top: 6px;" id="filterChips">
+                        <span class="chip active" onclick="filterJobsView('all')" id="filterChipAll">All Vacancies</span>
+                        <span class="chip" onclick="filterJobsView('high')" id="filterChipHigh">High Match (80%+)</span>
+                        <span class="chip" onclick="filterJobsView('remote')" id="filterChipRemote">Remote Only</span>
+                    </div>
+                </div>
+                <div style="font-size: 0.9rem; font-weight: 700; color: var(--accent-cyan);" id="resultCount">0 Vacancies Found</div>
+            </div>
+
+            <div id="jobsList">
+                <div class="step-card" style="text-align: center; color: var(--text-muted); padding: 3rem 1.5rem;">
+                    <div style="font-size: 3rem; margin-bottom: 10px;">🎯</div>
+                    <div style="font-size: 1.2rem; font-weight: 700; color: white;">Ready to Discover Vacancies</div>
+                    <div style="font-size: 0.9rem; margin-top: 6px;">Upload a resume above or click "FIND MATCHING JOBS ACROSS PLATFORMS" to view live vacancies.</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Application Modal Popup -->
+    <div class="modal" id="appModal">
+        <div class="modal-box">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; border-bottom: 1px solid var(--card-border); padding-bottom: 1rem;">
+                <div>
+                    <div class="modal-title" id="mJobTitle">Job Title</div>
+                    <div style="font-size: 0.85rem; color: var(--accent-cyan); font-weight: 700;" id="mCompany">Company Name</div>
+                </div>
+                <button onclick="closeModal()" style="background: rgba(255,255,255,0.1); border: none; color: white; width: 32px; height: 32px; border-radius: 50%; font-size: 1.2rem; cursor: pointer;">&times;</button>
+            </div>
+
+            <div class="tab-bar" style="margin-bottom: 1.5rem;">
+                <button class="tab-btn active" id="modalTabEmail" onclick="switchModalTab('email')">📧 HR Email</button>
+                <button class="tab-btn" id="modalTabCover" onclick="switchModalTab('cover')">📝 Cover Letter</button>
+                <button class="tab-btn" id="modalTabLinkedIn" onclick="switchModalTab('linkedin')">💬 LinkedIn InMail</button>
+            </div>
+
+            <!-- Email Section -->
+            <div id="mSectionEmail">
+                <div style="margin-bottom: 1.2rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                        <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted);">EMAIL SUBJECT LINE:</label>
+                        <button class="copy-btn" onclick="copyField('mSubject')">📋 Copy Subject</button>
+                    </div>
+                    <input type="text" id="mSubject" class="input-field">
+                </div>
+
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                        <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted);">HR EMAIL BODY:</label>
+                        <button class="copy-btn" onclick="copyField('mEmail')">📋 Copy Email Body</button>
+                    </div>
+                    <textarea id="mEmail" class="input-field" style="min-height: 220px; line-height: 1.5;"></textarea>
+                </div>
+            </div>
+
+            <!-- Cover Letter Section -->
+            <div id="mSectionCover" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                    <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted);">FULL COVER LETTER:</label>
+                    <button class="copy-btn" onclick="copyField('mCover')">📋 Copy Cover Letter</button>
+                </div>
+                <textarea id="mCover" class="input-field" style="min-height: 300px; line-height: 1.5;"></textarea>
+            </div>
+
+            <!-- LinkedIn Section -->
+            <div id="mSectionLinkedIn" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                    <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted);">LINKEDIN INMAIL MESSAGE:</label>
+                    <button class="copy-btn" onclick="copyField('mLinkedIn')">📋 Copy LinkedIn Note</button>
+                </div>
+                <textarea id="mLinkedIn" class="input-field" style="min-height: 200px; line-height: 1.5;"></textarea>
+            </div>
+
+            <!-- Full Download Buttons -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 1.2rem;">
+                <button class="action-btn action-btn-primary" onclick="downloadCoverLetterPDF()" style="justify-content: center; font-weight: 800; padding: 0.9rem; background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none;">
+                    📄 Download Cover Letter (.pdf)
+                </button>
+
+                <button class="action-btn" onclick="downloadApplicationPackage()" style="justify-content: center; font-weight: 700; padding: 0.9rem; background: rgba(99, 102, 241, 0.2); border: 1px solid rgba(99, 102, 241, 0.4); color: #a5b4fc;">
+                    📥 Download Package (.txt)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Company Profile & Careers Modal Popup -->
+    <div class="modal" id="companyModal">
+        <div class="modal-box" style="max-width: 650px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; border-bottom: 1px solid var(--card-border); padding-bottom: 1rem;">
+                <div>
+                    <div class="modal-title" id="cCompanyName" style="font-size: 1.4rem; color: #38bdf8;">🏢 Deloitte</div>
+                    <div style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;" id="cCompanyMeta">Official Company Hub & Live Careers</div>
+                </div>
+                <button onclick="closeCompanyModal()" style="background: rgba(255,255,255,0.1); border: none; color: white; width: 32px; height: 32px; border-radius: 50%; font-size: 1.2rem; cursor: pointer;">&times;</button>
+            </div>
+
+            <div style="background: rgba(15, 23, 42, 0.6); padding: 1.2rem; border-radius: 12px; border: 1px solid var(--card-border); margin-bottom: 1.2rem;">
+                <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent-cyan); margin-bottom: 8px; text-transform: uppercase;">Direct Company Links</div>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <a id="cOfficialBtn" href="#" target="_blank" class="action-btn action-btn-primary" style="text-decoration: none;">
+                        🌐 Official Company Site ↗
+                    </a>
+                    <a id="cLinkedInBtn" href="#" target="_blank" class="action-btn" style="background: rgba(10, 102, 194, 0.2); border-color: rgba(10, 102, 194, 0.4); color: #60a5fa; text-decoration: none;">
+                        💼 LinkedIn Careers ↗
+                    </a>
+                    <a id="cGoogleBtn" href="#" target="_blank" class="action-btn" style="background: rgba(6, 182, 212, 0.15); border-color: rgba(6, 182, 212, 0.4); color: #38bdf8; text-decoration: none;">
+                        🔍 Google Jobs Search ↗
+                    </a>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-bottom: 8px;">ACTIVE OPENINGS AT THIS COMPANY:</div>
+                <div id="cJobList" style="display: flex; flex-direction: column; gap: 10px; max-height: 260px; overflow-y: auto;">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toastMsg">Text copied to clipboard!</div>
+
+    <script>
+        let pipelineResults = null;
+
+        function switchResumeTab(mode) {
+            if(mode === 'file') {
+                document.getElementById('fileSection').style.display = 'block';
+                document.getElementById('textSection').style.display = 'none';
+                document.getElementById('tabUpload').classList.add('active');
+                document.getElementById('tabPaste').classList.remove('active');
+            } else {
+                document.getElementById('fileSection').style.display = 'none';
+                document.getElementById('textSection').style.display = 'block';
+                document.getElementById('tabUpload').classList.remove('active');
+                document.getElementById('tabPaste').classList.add('active');
+            }
+        }
+
+        function setRole(role) {
+            document.getElementById('roleInput').value = role;
+        }
+
+        function setLoc(loc) {
+            document.getElementById('locInput').value = loc;
+        }
+
+        let activeCandidateLoaded = false;
+        let currentLoadedFileName = null;
+
+        function fillSampleResume() {
+            if (activeCandidateLoaded) {
+                const sourceMsg = currentLoadedFileName ? `your uploaded file "${currentLoadedFileName}"` : "your current active resume profile";
+                if (!confirm(`Loading sample data will replace ${sourceMsg}. Do you want to proceed?`)) {
+                    return;
+                }
+            }
+            switchResumeTab('text');
+            document.getElementById('pasteText').value = 
+`Rahul Sharma
+Email: rahul.sharma@gmail.com | Phone: +91 9876543210
+Education: B.Tech in Computer Science - Mumbai University (2024)
+
+Skills: Python, SQL, PostgreSQL, Pandas, NumPy, Data Cleaning, Exploratory Data Analysis, Feature Engineering
+Tools: Power BI, Tableau, Excel, Git, VS Code
+
+Experience:
+Data Analyst Trainee - Apex Tech Solutions (July 2024 - Present)
+- Built interactive Power BI dashboards processing customer acquisition data.
+- Executed SQL queries to clean and analyze daily sales datasets.
+
+Projects:
+- Airbnb Demand Forecast Dashboard: Power BI & Python project analyzing room pricing trends.
+- E-Commerce Sales Pipeline: Python & SQL data extraction and visualization.`;
+            analyzeText();
+        }
+
+        async function uploadFile(event) {
+            const file = event.target.files[0];
+            if(!file) return;
+
+            const formData = new FormData();
+            formData.append("file", file);
+
+            try {
+                const res = await fetch('/resume/upload', { method: 'POST', body: formData });
+                const profile = await res.json();
+                currentLoadedFileName = file.name;
+
+                const badge = document.getElementById('fileBadge');
+                if (badge) {
+                    badge.innerText = `📄 Uploaded Resume: ${file.name}`;
+                    badge.style.display = 'inline-block';
+                }
+
+                if (profile.raw_text) {
+                    document.getElementById('pasteText').value = profile.raw_text;
+                }
+
+                showProfile(profile);
+                showToast(`Resume "${file.name}" uploaded! Please enter/confirm location in Step 2 & click "FIND MATCHING JOBS".`);
+
+                const locIn = document.getElementById('locInput');
+                if (locIn) {
+                    locIn.focus();
+                    locIn.select();
+                }
+            } catch(e) {
+                alert("Upload error: " + e.message);
+            }
+        }
+
+        async function analyzeText() {
+            const text = document.getElementById('pasteText').value;
+            if(!text) return alert("Please paste resume text first!");
+
+            const formData = new FormData();
+            formData.append("text", text);
+
+            try {
+                const res = await fetch('/resume/analyze', { method: 'POST', body: formData });
+                const profile = await res.json();
+                showProfile(profile);
+                showToast("Resume analyzed! Please enter/confirm location in Step 2 & click \"FIND MATCHING JOBS\".");
+
+                const locIn = document.getElementById('locInput');
+                if (locIn) {
+                    locIn.focus();
+                    locIn.select();
+                }
+            } catch(e) {
+                alert("Error: " + e.message);
+            }
+        }
+
+        function showProfile(profile) {
+            activeCandidateLoaded = true;
+            document.getElementById('profileBox').style.display = 'block';
+            
+            const name = profile.name || "Candidate Profile";
+            document.getElementById('pName').innerText = name;
+            document.getElementById('pAvatar').innerText = name.charAt(0).toUpperCase();
+
+            let contactParts = [];
+            if(profile.email) contactParts.push("✉️ " + profile.email);
+            if(profile.phone) contactParts.push("📞 " + profile.phone);
+            if(profile.location) contactParts.push("📍 " + profile.location);
+            document.getElementById('pContact').innerText = contactParts.join('  |  ') || "Profile Active";
+
+            // Auto-populate Location and Role inputs from parsed candidate profile
+            if (profile.location) {
+                document.getElementById('locInput').value = profile.location;
+            }
+            if (profile.target_role) {
+                document.getElementById('roleInput').value = profile.target_role;
+            }
+
+            let eduText = "";
+            if(profile.education && profile.education.length > 0) {
+                const e = profile.education[0];
+                let deg = (e.degree || "").replace(/^education:\s*/i, '').trim();
+                let inst = (e.institution || "").replace(/^education:\s*/i, '').trim();
+                let yr = (e.year || "").trim();
+
+                if (inst && (deg.toLowerCase().includes(inst.toLowerCase()) || inst.toLowerCase().includes(deg.toLowerCase()))) {
+                    inst = "";
+                }
+
+                eduText = "🎓 " + (deg || "Degree");
+                if (inst) eduText += " – " + inst;
+                if (yr && yr !== "Graduated" && yr !== "Relevant Grad" && !deg.includes(yr) && (!inst || !inst.includes(yr))) {
+                    eduText += " (" + yr + ")";
+                }
+            } else if(profile.summary) {
+                eduText = profile.summary;
+            }
+            document.getElementById('pEdu').innerText = eduText;
+            document.getElementById('pSummary').innerText = profile.summary || "Candidate profile active in pipeline matching.";
+
+            const allSkills = [...(profile.skills || []), ...(profile.tools || [])];
+            const uniqueSkills = allSkills.filter((s, idx, self) => self.findIndex(x => x.toLowerCase() === s.toLowerCase()) === idx);
+            document.getElementById('pSkills').innerHTML = uniqueSkills.map(s => `<span class="skill-tag">${s}</span>`).join('');
+        }
+
+        async function findJobs() {
+            const roleVal = document.getElementById('roleInput').value.trim();
+            const locVal = document.getElementById('locInput').value.trim();
+
+            if (!roleVal) {
+                alert("Please enter or select a Target Role / Title first!");
+                document.getElementById('roleInput').focus();
+                return;
+            }
+            if (!locVal) {
+                alert("Please enter or select a City / Location first!");
+                document.getElementById('locInput').focus();
+                return;
+            }
+
+            const resultsSec = document.getElementById('resultsSection');
+            if (resultsSec) {
+                resultsSec.style.display = 'block';
+                resultsSec.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            const btn = document.getElementById('findBtn');
+            btn.innerHTML = "⏳ Searching Vacancies Across Platforms...";
+            btn.disabled = true;
+
+            const prefs = {
+                target_role: roleVal,
+                location: locVal,
+                work_mode: document.getElementById('modeInput').value,
+                experience_level: document.getElementById('expInput').value,
+                result_limit: 10
+            };
+
+            try {
+                const res = await fetch('/search/jobs', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(prefs)
+                });
+                pipelineResults = await res.json();
+                renderJobsList(pipelineResults.jobs, pipelineResults.match_results);
+
+                btn.innerHTML = "🔍 FIND MATCHING JOBS ACROSS PLATFORMS";
+                btn.disabled = false;
+            } catch(e) {
+                alert("Search error: " + e.message);
+                btn.innerHTML = "🔍 FIND MATCHING JOBS ACROSS PLATFORMS";
+                btn.disabled = false;
+            }
+        }
+
+        let activeFilterMode = 'all';
+
+        function filterJobsView(mode) {
+            activeFilterMode = mode;
+            const cAll = document.getElementById('filterChipAll');
+            const cHigh = document.getElementById('filterChipHigh');
+            const cRemote = document.getElementById('filterChipRemote');
+            if (cAll) cAll.classList.toggle('active', mode === 'all');
+            if (cHigh) cHigh.classList.toggle('active', mode === 'high');
+            if (pipelineResults) {
+                renderJobsList(pipelineResults.jobs, pipelineResults.match_results);
+            }
+        }
+
+        function cleanAndSummarizeDescription(desc, idx) {
+            if (!desc) return "We are looking for a motivated candidate for this position. Key skills include Python, SQL, and Data Analysis.";
+
+            let clean = desc
+                .replace(/Post Resume For Recruiters[\s\S]*/i, '')
+                .replace(/\+ Free Job Posting[\s\S]*/i, '')
+                .replace(/filter Location Experience Role[\s\S]*/i, '')
+                .replace(/### Freshers & Experience[\s\S]*/i, '')
+                .replace(/HR Solutions - Overseas Placement[\s\S]*/i, '')
+                .replace(/Education Consultants - Immigration Services[\s\S]*/i, '')
+                .replace(/Secret Technologies India Vms Group/gi, '')
+                .replace(/\s+/g, ' ')
+                .trim();
+
+            if (clean.length > 220) {
+                const shortText = clean.substring(0, 220) + "...";
+                const safeClean = clean.replace(/'/g, "&apos;").replace(/"/g, "&quot;");
+                const safeShort = shortText.replace(/'/g, "&apos;").replace(/"/g, "&quot;");
+                return `
+                <span id="descShort_${idx}">${safeShort} <button onclick="toggleDesc(${idx}, true)" style="background: transparent; color: var(--accent-cyan); border: none; font-weight: 700; cursor: pointer; text-decoration: underline;">Read More 🔽</button></span>
+                <span id="descFull_${idx}" style="display: none;">${safeClean} <button onclick="toggleDesc(${idx}, false)" style="background: transparent; color: var(--accent-cyan); border: none; font-weight: 700; cursor: pointer; text-decoration: underline;">Show Less 🔼</button></span>
+                `;
+            }
+            return clean;
+        }
+
+        function toggleDesc(idx, showFull) {
+            const s = document.getElementById('descShort_' + idx);
+            const f = document.getElementById('descFull_' + idx);
+            if (s && f) {
+                s.style.display = showFull ? 'none' : 'inline';
+                f.style.display = showFull ? 'inline' : 'none';
+            }
+        }
+
+        function getAppliedTracker() {
+            try {
+                return JSON.parse(localStorage.getItem('ai_job_applied_tracker') || '{}');
+            } catch(e) {
+                return {};
+            }
+        }
+
+        function recordJobStarted(jobId, company, title, method) {
+            const key = jobId || (company + '_' + title).toLowerCase().replace(/[^a-z0-9]/g, '_');
+            const tracker = getAppliedTracker();
+            // Only set to STARTED if not already confirmed APPLIED
+            if (!tracker[key] || tracker[key].status !== 'APPLIED') {
+                tracker[key] = {
+                    status: 'STARTED',
+                    company: company,
+                    title: title,
+                    method: method,
+                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                };
+                localStorage.setItem('ai_job_applied_tracker', JSON.stringify(tracker));
+                updateAppliedCountUI();
+            }
+        }
+
+        function confirmJobApplied(jobId, company, title) {
+            const key = jobId || (company + '_' + title).toLowerCase().replace(/[^a-z0-9]/g, '_');
+            const tracker = getAppliedTracker();
+            const current = tracker[key] || {};
+            tracker[key] = {
+                status: 'APPLIED',
+                company: company,
+                title: title,
+                method: current.method || 'Direct',
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            };
+            localStorage.setItem('ai_job_applied_tracker', JSON.stringify(tracker));
+            updateAppliedCountUI();
+            showToast(`✅ Job marked as CONFIRMED APPLIED!`);
+            if (pipelineResults) {
+                renderJobsList(pipelineResults.jobs, pipelineResults.match_results);
+            }
+        }
+
+        function cancelJobTrack(jobId, company, title) {
+            const key = jobId || (company + '_' + title).toLowerCase().replace(/[^a-z0-9]/g, '_');
+            const tracker = getAppliedTracker();
+            delete tracker[key];
+            localStorage.setItem('ai_job_applied_tracker', JSON.stringify(tracker));
+            updateAppliedCountUI();
+            showToast(`↩️ Application status reset.`);
+            if (pipelineResults) {
+                renderJobsList(pipelineResults.jobs, pipelineResults.match_results);
+            }
+        }
+
+        function updateAppliedCountUI() {
+            const tracker = getAppliedTracker();
+            let count = 0;
+            Object.values(tracker).forEach(t => {
+                if (t.status === 'APPLIED') count++;
+            });
+            const el = document.getElementById('appliedCountStat');
+            if (el) {
+                el.innerText = `${count} Confirmed`;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateAppliedCountUI();
+        });
+
+        function renderJobsList(jobs, matches) {
+            const list = document.getElementById('jobsList');
+            const count = document.getElementById('resultCount');
+            updateAppliedCountUI();
+
+            if(!jobs || jobs.length === 0) {
+                list.innerHTML = `
+                <div class="step-card" style="text-align: center; padding: 2rem;">
+                    <p style="color: var(--text-muted);">No vacancies found matching your criteria. Try adjusting location or role.</p>
+                </div>`;
+                count.innerText = "0 Vacancies Found";
+                return;
+            }
+
+            let filteredJobs = jobs || [];
+            if (activeFilterMode === 'high') {
+                filteredJobs = filteredJobs.filter(j => {
+                    const m = (matches || []).find(x => x.job_id === j.job_id) || {};
+                    return (m.match_score || 0) >= 80;
+                });
+            } else if (activeFilterMode === 'remote') {
+                filteredJobs = filteredJobs.filter(j => (j.work_mode || '').toLowerCase() === 'remote');
+            }
+
+            if(filteredJobs.length === 0) {
+                list.innerHTML = `
+                <div class="step-card" style="text-align: center; padding: 2rem;">
+                    <p style="color: var(--text-muted);">No vacancies match the selected filter (${activeFilterMode}). Try switching back to "All Vacancies".</p>
+                </div>`;
+                count.innerText = `0 of ${jobs.length} Vacancies Displayed`;
+                return;
+            }
+
+            count.innerText = `${filteredJobs.length} of ${jobs.length} Vacancies Displayed`;
+
+            const tracker = getAppliedTracker();
+
+            let html = "";
+            filteredJobs.forEach((job) => {
+                const idx = jobs.findIndex(j => j.job_id === job.job_id);
+                const match = (matches || []).find(m => m.job_id === job.job_id) || {};
+                const score = match.match_score || 0;
+                const gap = match.skill_gap || {};
+                const badgeClass = score >= 80 ? '' : 'medium';
+
+                const jobKey = job.job_id || (job.company + '_' + job.title).toLowerCase().replace(/[^a-z0-9]/g, '_');
+                const appliedInfo = tracker[jobKey];
+
+                // Deduplicate matched skills case-insensitively
+                const rawSkills = gap.matched_skills || [];
+                const matchedSkills = rawSkills.filter((skill, index, self) =>
+                    index === self.findIndex((s) => s.toLowerCase() === skill.toLowerCase())
+                );
+
+                // Deduplicate sources by platform name & filter out non-job social media platforms
+                const nonJobPlatforms = ['instagram', 'youtube', 'facebook', 'twitter', 'pinterest', 'tiktok'];
+                const uniqueSources = [];
+                const seenPlatforms = new Set();
+                (job.sources || []).forEach(s => {
+                    const pName = s.platform || 'Platform';
+                    const pLower = pName.toLowerCase();
+                    const sUrlLower = (s.url || '').toLowerCase();
+                    const isSocialMedia = nonJobPlatforms.some(inv => pLower.includes(inv) || sUrlLower.includes(inv));
+
+                    if(!seenPlatforms.has(pName) && !isSocialMedia) {
+                        seenPlatforms.add(pName);
+                        uniqueSources.push(s);
+                    }
+                });
+
+                const compUrl = getCompanyOfficialPageUrl(job.company, job.location);
+                let directUrl = job.canonical_url || (job.sources && job.sources[0] ? job.sources[0].url : '');
+                
+                // If URL points to generic aggregator search page, override with exact official company portal URL
+                if (!directUrl || directUrl.includes('naukri.com/') || directUrl.includes('glassdoor.') || directUrl.includes('indeed.com/jobs') || directUrl.includes('/search') || directUrl === '#') {
+                    directUrl = compUrl;
+                }
+
+                let appliedBadgeHtml = '';
+                if (appliedInfo) {
+                    if (appliedInfo.status === 'APPLIED') {
+                        appliedBadgeHtml = `
+                        <div class="match-badge" style="background: rgba(16, 185, 129, 0.25); border-color: #10b981; color: #34d399; font-weight: 800;" title="Applied at ${appliedInfo.time} via ${appliedInfo.method}">
+                            ✓ CONFIRMED APPLIED (${appliedInfo.method})
+                        </div>`;
+                    } else if (appliedInfo.status === 'STARTED') {
+                        appliedBadgeHtml = `
+                        <div class="match-badge" style="background: rgba(245, 158, 11, 0.25); border-color: #f59e0b; color: #fbbf24; font-weight: 800;" title="Opened at ${appliedInfo.time} - Pending your confirmation">
+                            ⏳ APPLICATION STARTED
+                        </div>`;
+                    }
+                }
+
+                const safeJobId = (job.job_id || '').replace(/'/g, "\\'");
+                const safeJobComp = (job.company || '').replace(/'/g, "\\'");
+                const safeJobTitle = (job.title || '').replace(/'/g, "\\'");
+
+                let confirmBarHtml = '';
+                if (appliedInfo && appliedInfo.status === 'STARTED') {
+                    confirmBarHtml = `
+                    <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 8px; padding: 10px 14px; margin-top: 12px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+                        <span style="font-size: 0.85rem; font-weight: 700; color: #fbbf24;">
+                            ❓ Did you finish submitting your application on ${job.company}?
+                        </span>
+                        <div style="display: flex; gap: 8px;">
+                            <button onclick="confirmJobApplied('${safeJobId}', '${safeJobComp}', '${safeJobTitle}')" class="action-btn" style="background: #10b981; color: white; border: none; font-size: 0.82rem; padding: 6px 14px;">
+                                ✅ Yes, Applied!
+                            </button>
+                            <button onclick="cancelJobTrack('${safeJobId}', '${safeJobComp}', '${safeJobTitle}')" class="action-btn" style="background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); font-size: 0.82rem; padding: 6px 12px;">
+                                ↩️ No / Backed Out
+                            </button>
+                        </div>
+                    </div>`;
+                } else if (appliedInfo && appliedInfo.status === 'APPLIED') {
+                    confirmBarHtml = `
+                    <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 8px 14px; margin-top: 12px; display: flex; align-items: center; justify-content: space-between;">
+                        <span style="font-size: 0.82rem; font-weight: 700; color: #34d399;">
+                            ✓ Application confirmed for ${job.company}.
+                        </span>
+                        <button onclick="cancelJobTrack('${safeJobId}', '${safeJobComp}', '${safeJobTitle}')" style="background: transparent; color: #a5b4fc; border: none; font-size: 0.8rem; cursor: pointer; text-decoration: underline;">
+                            Reset Status
+                        </button>
+                    </div>`;
+                }
+
+                const cleanedDescHtml = cleanAndSummarizeDescription(job.description, idx);
+
+                html += `
+                <div class="job-card" style="${appliedInfo ? (appliedInfo.status === 'APPLIED' ? 'border: 1px solid rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.02);' : 'border: 1px solid rgba(245, 158, 11, 0.4); background: rgba(245, 158, 11, 0.02);') : ''}">
+                    <div class="job-top">
+                        <div>
+                            <div class="job-title">
+                                <a href="${directUrl}" target="_blank" rel="noopener noreferrer" style="color: #ffffff; text-decoration: none;" title="Direct official vacancy link for ${job.company} ${job.title}">
+                                    ${job.title} ↗
+                                </a>
+                            </div>
+                            <div class="job-company">
+                                <a href="${compUrl}" target="_blank" rel="noopener noreferrer" style="color: var(--accent-cyan); text-decoration: underline; font-weight: 800;" title="Click to visit official ${job.company} careers page">
+                                    🏢 ${job.company} ↗
+                                </a>
+                                &nbsp;•&nbsp; 📍 ${job.location} &nbsp;•&nbsp; 💼 ${job.work_mode}
+                            </div>
+                            <div style="font-size: 0.85rem; font-weight: 700; color: #38bdf8; margin-top: 4px;">
+                                ✉️ Direct HR Email: <span style="color: #f1f5f9; background: rgba(56, 189, 248, 0.15); padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(56, 189, 248, 0.3);">${(job.hr_email && job.hr_email.includes('@') && !job.hr_email.includes('indore.com') && !job.hr_email.includes('company.com')) ? job.hr_email : 'Apply via Official Company Portal'}</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                            ${appliedBadgeHtml}
+                            <div class="match-badge ${badgeClass}">${score}% Match</div>
+                        </div>
+                    </div>
+
+                    <div style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.2rem; background: rgba(255, 255, 255, 0.02); padding: 10px 14px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05);">
+                        ${cleanedDescHtml}
+                    </div>
+
+                    <div style="margin-bottom: 12px;">
+                        <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">YOUR MATCHED SKILLS:</span>
+                        ${matchedSkills.map(s => `<span class="skill-tag" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border-color: rgba(16, 185, 129, 0.3);">✓ ${s}</span>`).join('')}
+                    </div>
+
+                    <div class="job-actions">
+                        <button onclick="directApplyToCompany(${idx})" class="action-btn" style="${appliedInfo && appliedInfo.status === 'APPLIED' ? 'background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; color: #34d399;' : 'background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%); color: #ffffff; border: none;'} font-weight: 800; font-size: 0.95rem; padding: 10px 18px;" title="Click to auto-download your PDFs and open the official company vacancy page directly!">
+                            🚀 Direct Apply to Company (Auto-Download PDFs & Open Portal) ↗
+                        </button>
+
+                        <button onclick="openGmailWithAutoDownload(${idx})" class="action-btn" style="${appliedInfo && appliedInfo.status === 'APPLIED' ? 'background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; color: #34d399;' : 'background: linear-gradient(135deg, #ea4335 0%, #c5221f 100%); color: #ffffff; border: none;'} font-weight: 800; font-size: 0.9rem; padding: 10px 16px;" title="Click to auto-download your Resume PDF and open Gmail with pre-filled HR email and Cover Letter!">
+                            📧 Apply via Gmail ↗
+                        </button>
+
+                        ${uniqueSources.map(s => `<a href="${s.url}" target="_blank" class="action-btn">🌐 View on ${s.platform} ↗</a>`).join('')}
+
+                        <button class="action-btn action-btn-primary" onclick="openModal(${idx})">
+                            ✉️ Get Application Package (.txt)
+                        </button>
+                    </div>
+
+                    ${confirmBarHtml}
+                </div>
+                `;
+            });
+
+            list.innerHTML = html;
+        }
+
+        function getCompanyOfficialPageUrl(company, location) {
+            const cleanComp = (company || "Company").replace(" Indore", "").replace(" Surat", "").replace(" Pune", "").replace(" Delhi", "").trim();
+            const knownPortals = {
+                "teleperformance": "https://www.teleperformance.com/en-us/careers/",
+                "tcs": "https://www.tcs.com/careers",
+                "l&t": "https://www.larsentoubro.com/corporate/careers/",
+                "tata": "https://www.tata.com/careers",
+                "tech mahindra": "https://www.techmahindra.com/en-in/careers/",
+                "impetus": "https://www.impetus.com/careers/",
+                "yash technologies": "https://www.yashtech.com/careers/",
+                "webkul": "https://webkul.com/careers/",
+                "systematix": "https://systematixinfotech.com/careers/",
+                "flipkart": "https://www.flipkartcareers.com/",
+                "zomato": "https://www.zomato.com/careers",
+                "swiggy": "https://careers.swiggy.com/",
+                "deqode": "https://deqode.com/careers/",
+                "geeksforgeeks": "https://www.geeksforgeeks.org/careers/",
+                "placementindia": "https://www.placementindia.com/"
+            };
+            
+            const key = cleanComp.toLowerCase();
+            for (const [k, url] of Object.entries(knownPortals)) {
+                if (key.includes(k)) return url;
+            }
+            return `https://www.google.com/search?q=${encodeURIComponent(company + ' ' + (location || '') + ' official website careers overview')}`;
+        }
+
+        function directApplyToCompany(idx) {
+            if (!pipelineResults || !pipelineResults.jobs || !pipelineResults.jobs[idx]) return;
+            const job = pipelineResults.jobs[idx];
+            const app = (pipelineResults.applications && pipelineResults.applications[idx]) ? pipelineResults.applications[idx] : null;
+            const profile = pipelineResults.candidate_profile || {};
+
+            // Step 1: Record application as STARTED (Pending user confirmation)
+            recordJobStarted(job.job_id, job.company, job.title, 'Portal');
+
+            const candName = (profile.name || "Candidate").replace(" [DEMO CANDIDATE]", "");
+            const coverText = (app && app.package) ? (app.package.cover_letter || "") : "";
+            const emailBody = (app && app.package) ? (app.package.hr_email_body || coverText) : coverText;
+
+            const safeTitle = encodeURIComponent(job.title || 'Data Analyst');
+            const safeComp = encodeURIComponent(job.company || 'Company');
+            const safeCandName = candName.replace(/ /g, '_');
+            const safeCompName = (job.company || 'Company').replace(/ /g, '_');
+
+            // Download Resume PDF
+            const link1 = document.createElement('a');
+            link1.href = `/resume/download`;
+            link1.download = `Resume_${safeCandName}.pdf`;
+            document.body.appendChild(link1);
+            link1.click();
+            document.body.removeChild(link1);
+
+            // Download Cover Letter PDF (staggered 200ms)
+            setTimeout(() => {
+                const link2 = document.createElement('a');
+                link2.href = `/resume/cover-letter/download-pdf?title=${safeTitle}&company=${safeComp}&cover_letter=${encodeURIComponent(coverText)}`;
+                link2.download = `Cover_Letter_${safeCandName}_${safeCompName}.pdf`;
+                document.body.appendChild(link2);
+                link2.click();
+                document.body.removeChild(link2);
+            }, 200);
+
+            // Download HR Email PDF (staggered 400ms)
+            setTimeout(() => {
+                const link3 = document.createElement('a');
+                link3.href = `/resume/hr-email/download-pdf?title=${safeTitle}&company=${safeComp}&email_body=${encodeURIComponent(emailBody)}`;
+                link3.download = `HR_Email_${safeCandName}_${safeCompName}.pdf`;
+                document.body.appendChild(link3);
+                link3.click();
+                document.body.removeChild(link3);
+            }, 400);
+
+            // Directly open official vacancy URL
+            const compUrl = getCompanyOfficialPageUrl(job.company, job.location);
+            let directUrl = job.canonical_url || (job.sources && job.sources[0] ? job.sources[0].url : '');
+            
+            if (!directUrl || directUrl.includes('naukri.com/') || directUrl.includes('glassdoor.') || directUrl.includes('indeed.com/jobs') || directUrl.includes('/search') || directUrl === '#') {
+                directUrl = compUrl;
+            }
+            
+            showToast(`🚀 PDFs Downloaded! Opening ${job.company} Portal...`);
+
+            // Re-render UI to display yellow "APPLICATION STARTED" badge + confirmation buttons
+            if (pipelineResults) {
+                renderJobsList(pipelineResults.jobs, pipelineResults.match_results);
+            }
+
+            setTimeout(() => {
+                window.open(directUrl, '_blank');
+            }, 600);
+        }
+
+        function openGmailWithAutoDownload(idx) {
+            if (!pipelineResults || !pipelineResults.jobs || !pipelineResults.jobs[idx]) return;
+            const job = pipelineResults.jobs[idx];
+            const app = (pipelineResults.applications && pipelineResults.applications[idx]) ? pipelineResults.applications[idx] : null;
+            const profile = pipelineResults.candidate_profile || {};
+
+            // Step 1: Record application as STARTED (Pending user confirmation)
+            recordJobStarted(job.job_id, job.company, job.title, 'Gmail');
+            
+            let hrEmail = (job.hr_email && job.hr_email.includes('@') && !job.hr_email.includes('indore.com') && !job.hr_email.includes('company.com')) ? job.hr_email : "";
+            const candName = (profile.name || "Candidate").replace(" [DEMO CANDIDATE]", "");
+            const subject = app ? (app.package ? app.package.email_subject : `Application for ${job.title} Position - ${candName}`) : `Application for ${job.title} Position - ${candName}`;
+            const coverText = (app && app.package) ? (app.package.cover_letter || "") : "";
+            const emailBody = (app && app.package) ? (app.package.hr_email_body || coverText) : coverText;
+            
+            const body = emailBody + "\n\n📌 NOTE: Please find my attached Resume, Cover Letter, and HR Application PDFs attached for your review.";
+
+            const safeTitle = encodeURIComponent(job.title || 'Data Analyst');
+            const safeComp = encodeURIComponent(job.company || 'Company');
+            const safeCandName = candName.replace(/ /g, '_');
+            const safeCompName = (job.company || 'Company').replace(/ /g, '_');
+
+            // Download PDF 1: Resume PDF
+            const link1 = document.createElement('a');
+            link1.href = `/resume/download`;
+            link1.download = `Resume_${safeCandName}.pdf`;
+            document.body.appendChild(link1);
+            link1.click();
+            document.body.removeChild(link1);
+
+            // Download PDF 2: Cover Letter PDF (staggered 200ms)
+            setTimeout(() => {
+                const link2 = document.createElement('a');
+                link2.href = `/resume/cover-letter/download-pdf?title=${safeTitle}&company=${safeComp}&cover_letter=${encodeURIComponent(coverText)}`;
+                link2.download = `Cover_Letter_${safeCandName}_${safeCompName}.pdf`;
+                document.body.appendChild(link2);
+                link2.click();
+                document.body.removeChild(link2);
+            }, 200);
+
+            // Download PDF 3: HR Email Draft PDF (staggered 400ms)
+            setTimeout(() => {
+                const link3 = document.createElement('a');
+                link3.href = `/resume/hr-email/download-pdf?title=${safeTitle}&company=${safeComp}&subject=${encodeURIComponent(subject)}&email_body=${encodeURIComponent(emailBody)}`;
+                link3.download = `HR_Email_${safeCandName}_${safeCompName}.pdf`;
+                document.body.appendChild(link3);
+                link3.click();
+                document.body.removeChild(link3);
+            }, 400);
+
+            showToast(`📄 PDFs Downloaded! Opening Gmail...`);
+
+            // Re-render UI to display yellow "APPLICATION STARTED" badge + confirmation buttons
+            if (pipelineResults) {
+                renderJobsList(pipelineResults.jobs, pipelineResults.match_results);
+            }
+
+            // Open Gmail Compose window (staggered 800ms)
+            setTimeout(() => {
+                const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(hrEmail)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                window.open(gmailUrl, '_blank');
+            }, 800);
+        }
+
+        function openModal(idx) {
+            if(!pipelineResults || !pipelineResults.applications || !pipelineResults.applications[idx]) return;
+
+            const app = pipelineResults.applications[idx];
+            const pkg = app.package;
+
+            document.getElementById('mJobTitle').innerText = app.title;
+            document.getElementById('mCompany').innerText = "Company: " + app.company + " | Match Score: " + app.match_score + "%";
+            document.getElementById('mSubject').value = pkg.email_subject || "";
+            document.getElementById('mEmail').value = pkg.hr_email_body || "";
+            document.getElementById('mCover').value = pkg.cover_letter || "";
+            document.getElementById('mLinkedIn').value = pkg.linkedin_message || ("Dear Hiring Manager,\n\nI recently applied for the " + app.title + " role at " + app.company + ". I would love to connect and share how my data skills can contribute to your team.\n\nBest regards,\nCandidate");
+
+            switchModalTab('email');
+            document.getElementById('appModal').classList.add('active');
+        }
+
+        function switchModalTab(tab) {
+            document.getElementById('mSectionEmail').style.display = tab === 'email' ? 'block' : 'none';
+            document.getElementById('mSectionCover').style.display = tab === 'cover' ? 'block' : 'none';
+            document.getElementById('mSectionLinkedIn').style.display = tab === 'linkedin' ? 'block' : 'none';
+
+            document.getElementById('modalTabEmail').classList.toggle('active', tab === 'email');
+            document.getElementById('modalTabCover').classList.toggle('active', tab === 'cover');
+            document.getElementById('modalTabLinkedIn').classList.toggle('active', tab === 'linkedin');
+        }
+
+        function closeModal() {
+            document.getElementById('appModal').classList.remove('active');
+        }
+
+        function copyField(id) {
+            const el = document.getElementById(id);
+            el.select();
+            document.execCommand('copy');
+            showToast("Copied to clipboard!");
+        }
+
+        async function downloadCoverLetterPDF() {
+            const title = document.getElementById('mJobTitle').innerText;
+            const company = document.getElementById('mCompany').innerText;
+            const cover = document.getElementById('mCover').value || document.getElementById('mEmail').value;
+
+            try {
+                showToast("📄 Generating Cover Letter PDF document...");
+                const res = await fetch('/resume/cover-letter/download-pdf', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        title: title,
+                        company: company,
+                        cover_letter: cover
+                    })
+                });
+                if (!res.ok) throw new Error("Failed to generate Cover Letter PDF");
+                
+                const blob = await res.blob();
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Cover_Letter_${title.replace(/[^a-z0-9]/gi, '_')}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                showToast("✅ Cover Letter PDF downloaded successfully!");
+            } catch (ex) {
+                showToast("Error downloading PDF: " + ex.message);
+            }
+        }
+
+        async function downloadHREmailPDF() {
+            const title = document.getElementById('mJobTitle').innerText;
+            const company = document.getElementById('mCompany').innerText;
+            const subject = document.getElementById('mSubject').value;
+            const email = document.getElementById('mEmail').value;
+
+            try {
+                showToast("📧 Generating HR Email PDF document...");
+                const res = await fetch('/resume/hr-email/download-pdf', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        title: title,
+                        company: company,
+                        subject: subject,
+                        email_body: email
+                    })
+                });
+                if (!res.ok) throw new Error("Failed to generate HR Email PDF");
+                
+                const blob = await res.blob();
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `HR_Email_${title.replace(/[^a-z0-9]/gi, '_')}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                showToast("✅ HR Email PDF downloaded successfully!");
+            } catch (ex) {
+                showToast("Error downloading HR Email PDF: " + ex.message);
+            }
+        }
+
+        function downloadApplicationPackage() {
+            const title = document.getElementById('mJobTitle').innerText;
+            const company = document.getElementById('mCompany').innerText;
+            const subject = document.getElementById('mSubject').value;
+            const email = document.getElementById('mEmail').value;
+            const cover = document.getElementById('mCover').value;
+            const linkedin = document.getElementById('mLinkedIn').value;
+
+            const content = `=====================================================
+APPLICATION PACKAGE FOR: ${title}
+DETAILS: ${company}
+DATE: ${new Date().toLocaleString()}
+=====================================================
+
+1. EMAIL SUBJECT LINE:
+-----------------------------------------------------
+${subject}
+
+2. HR EMAIL BODY:
+-----------------------------------------------------
+${email}
+
+3. FULL COVER LETTER:
+-----------------------------------------------------
+${cover}
+
+4. LINKEDIN INMAIL / DIRECT MESSAGE:
+-----------------------------------------------------
+${linkedin}
+
+=====================================================
+Generated by 10X AI Job Search & Application Assistant
+=====================================================`;
+
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Application_${title.replace(/[^a-z0-9]/gi, '_')}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast("Full Application Package downloaded successfully!");
+        }
+
+        let pendingJobIdx = null;
+
+        function openSMTPModal(jobIdx) {
+            pendingJobIdx = jobIdx;
+            document.getElementById('smtpModal').classList.add('active');
+        }
+
+        function closeSMTPModal() {
+            document.getElementById('smtpModal').classList.remove('active');
+        }
+
+        async function saveSMTPConfigAndDispatch() {
+            const email = document.getElementById('smtpEmailInput').value;
+            const pass = document.getElementById('smtpPassInput').value;
+            if (!email || !pass) {
+                alert("Please enter both your Gmail Address and 16-character App Password.");
+                return;
+            }
+            try {
+                const res = await fetch('/config/smtp', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        sender_email: email,
+                        sender_password: pass
+                    })
+                });
+                const data = await res.json();
+                showToast(data.message || "Email credentials saved!");
+                closeSMTPModal();
+                if (pendingJobIdx !== null) {
+                    sendDirectAutoEmail(pendingJobIdx, null);
+                }
+            } catch (ex) {
+                alert("Error saving SMTP config: " + ex.message);
+            }
+        }
+
+        async function sendDirectAutoEmail(idx, btnEl) {
+            if (!pipelineResults || !pipelineResults.jobs || !pipelineResults.jobs[idx]) return;
+            const job = pipelineResults.jobs[idx];
+            const app = (pipelineResults.applications && pipelineResults.applications[idx]) ? pipelineResults.applications[idx] : null;
+            const profile = pipelineResults.candidate_profile || {};
+            
+            const hrEmail = job.hr_email || `hr@${job.company.toLowerCase().replace(/[^a-z0-9]/g, '')}.com`;
+            const candName = (profile.name || "Candidate").replace(" [DEMO CANDIDATE]", "");
+            const subject = app ? (app.package ? app.package.email_subject : `Application for ${job.title} Position - ${candName}`) : `Application for ${job.title} Position - ${candName}`;
+            
+            let body = "";
+            if (app && app.package && app.package.hr_email_body) {
+                body = app.package.hr_email_body;
+            } else {
+                body = `Dear Hiring Team at ${job.company},\n\nI am writing to express my strong interest in the ${job.title} position in ${job.location}.\n\nWith hands-on technical skills and project experience in data analytics, I am confident in adding immediate value to your team at ${job.company}.\n\n📌 NOTE: Please find my attached Resume PDF for your detailed review.\n\nBest regards,\n${candName}\n${profile.email || ''}\n${profile.phone || ''}`;
+            }
+
+            const originalText = btnEl ? btnEl.innerText : "";
+            if (btnEl) {
+                btnEl.innerText = "⏳ Sending Direct Email to HR...";
+                btnEl.disabled = true;
+            }
+
+            try {
+                const res = await fetch('/jobs/send-email', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        job_id: job.job_id,
+                        to_email: hrEmail,
+                        subject: subject,
+                        body: body
+                    })
+                });
+                const data = await res.json();
+                
+                if (data.status === "SENT_LIVE") {
+                    showToast("✅ LIVE EMAIL SENT DIRECTLY TO HR! Resume PDF & Cover Letter attached.");
+                } else {
+                    // Open SMTP modal directly inside app (No Gmail web tabs)
+                    openSMTPModal(idx);
+                }
+            } catch (e) {
+                showToast("Email Dispatch error: " + e.message);
+            } finally {
+                if (btnEl) {
+                    btnEl.innerText = originalText;
+                    btnEl.disabled = false;
+                }
+            }
+        }
+
+        function openCompanyModal(companyName) {
+            if (!companyName) return;
+            document.getElementById('cCompanyName').innerText = "🏢 " + companyName;
+            document.getElementById('cCompanyMeta').innerText = companyName + " — Official Company Page & Live Careers Hub";
+
+            const officialSearchUrl = "https://www.google.com/search?q=" + encodeURIComponent(companyName + " official website careers overview");
+            const linkedinSearchUrl = "https://www.linkedin.com/jobs/search/?keywords=" + encodeURIComponent(companyName);
+            const googleCareersUrl = "https://www.google.com/search?q=" + encodeURIComponent(companyName + " jobs hiring");
+
+            document.getElementById('cOfficialBtn').href = officialSearchUrl;
+            document.getElementById('cLinkedInBtn').href = linkedinSearchUrl;
+            document.getElementById('cGoogleBtn').href = googleCareersUrl;
+
+            const cJobList = document.getElementById('cJobList');
+            let matchingJobs = [];
+            if (pipelineResults && pipelineResults.jobs) {
+                matchingJobs = pipelineResults.jobs.filter(j => j.company.toLowerCase() === companyName.toLowerCase());
+            }
+
+            if (matchingJobs.length === 0) {
+                cJobList.innerHTML = `<div style="color: var(--text-muted); font-size: 0.85rem; padding: 12px; background: rgba(255,255,255,0.03); border-radius: 8px;">No other open positions found in current search. Use the links above to visit ${companyName}'s official careers portal directly.</div>`;
+            } else {
+                cJobList.innerHTML = matchingJobs.map((j) => {
+                    const origIdx = pipelineResults.jobs.findIndex(x => x.job_id === j.job_id);
+                    return `
+                        <div style="background: rgba(255,255,255,0.05); padding: 10px 14px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--card-border);">
+                            <div>
+                                <div style="font-weight: 700; color: white;">${j.title}</div>
+                                <div style="font-size: 0.8rem; color: var(--text-muted);">📍 ${j.location} • 💼 ${j.work_mode}</div>
+                            </div>
+                            <button class="action-btn action-btn-primary" style="padding: 4px 10px; font-size: 0.8rem;" onclick="closeCompanyModal(); openModal(${origIdx});">
+                                ✉️ Get Application
+                            </button>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            document.getElementById('companyModal').classList.add('active');
+        }
+
+        function closeCompanyModal() {
+            document.getElementById('companyModal').classList.remove('active');
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toastMsg');
+            toast.innerText = msg;
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        // DOM Ready setup
+        window.addEventListener('DOMContentLoaded', () => {
+            // Close modals on backdrop click
+            const modal = document.getElementById('appModal');
+            if (modal) {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) closeModal();
+                });
+            }
+            const cModal = document.getElementById('companyModal');
+            if (cModal) {
+                cModal.addEventListener('click', (e) => {
+                    if (e.target === cModal) closeCompanyModal();
+                });
+            }
+            // Close modals on Escape key
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeModal();
+                    closeCompanyModal();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

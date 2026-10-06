@@ -1,0 +1,16 @@
+TO: hr@glassdoor.co.com
+SUBJECT: Application for 79 data analytics jobs in Indore, September 2026 - Atul Deepak More
+
+BODY:
+Dear Hiring Team at Glassdoor.co,
+
+I am writing to express my enthusiastic interest in the 79 data analytics jobs in Indore, September 2026 position. I hold strong skills in Python, SQL, Pandas, NumPy, alongside practical hands-on project experience in data cleaning, visualization, and analytical insights generation.
+
+Attached is my resume for your review. I look forward to discussing how my analytical skills can add value to Glassdoor.co.
+
+Best regards,
+Atul Deepak More
+
+ATTACHMENTS:
+1. Cover_Letter_Atul_Deepak_More_Glassdoor.co.txt
+2. Resume_Atul_Deepak_More.txt
