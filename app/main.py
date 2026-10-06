@@ -9,6 +9,7 @@ from app.api.routes_resume import router as resume_router
 from app.api.routes_jobs import router as jobs_router
 from app.api.routes_match import router as match_router
 from app.api.routes_application import router as app_router
+from app.api.routes_auth import router as auth_router
 from app.database.db import init_db
 
 init_db()
@@ -31,6 +32,7 @@ app.include_router(resume_router)
 app.include_router(jobs_router)
 app.include_router(match_router)
 app.include_router(app_router)
+app.include_router(auth_router)
 
 @app.get("/health", tags=["System"])
 def health_check():

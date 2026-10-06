@@ -534,6 +534,220 @@
             animation: slideUp 0.3s ease;
         }
 
+        /* Auth Header & Modal Styles */
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .auth-btn {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
+        }
+
+        .user-profile-badge {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--card-border);
+            padding: 6px 14px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .user-avatar {
+            width: 26px;
+            height: 26px;
+            background: var(--secondary-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: white;
+        }
+
+        .logout-link {
+            color: #ef4444;
+            cursor: pointer;
+            margin-left: 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(8, 12, 20, 0.8);
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            animation: fadeIn 0.25s ease forwards;
+        }
+
+        .auth-card {
+            background: rgba(18, 25, 41, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 440px;
+            padding: 2.2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-card::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 150px;
+            height: 150px;
+            background: var(--primary-gradient);
+            filter: blur(60px);
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .auth-close {
+            position: absolute;
+            top: 18px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.08);
+            border: none;
+            color: var(--text-muted);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .auth-close:hover {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        .auth-tabs {
+            display: flex;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 5px;
+            border-radius: 12px;
+            margin-bottom: 1.8rem;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-weight: 700;
+            font-size: 0.9rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .auth-tab.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .auth-input-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .auth-input-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        .auth-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .auth-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 12px 14px 12px 14px;
+            color: white;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .auth-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .auth-submit-btn {
+            width: 100%;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+            transition: all 0.2s ease;
+            margin-top: 0.5rem;
+        }
+
+        .auth-submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.6);
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
@@ -557,9 +771,16 @@
                     <div class="header-subtitle">Multi-Platform Vacancy Matcher, Resume Parser & Smart Application Generator</div>
                 </div>
             </div>
-            <div class="status-pill">
-                <div class="status-dot"></div>
-                <span>Server Online</span>
+            <div class="header-right">
+                <div class="status-pill">
+                    <div class="status-dot"></div>
+                    <span>Server Online</span>
+                </div>
+                <div id="userProfileArea">
+                    <button class="auth-btn" onclick="openAuthModal('login')">
+                        <span>🔑</span> Login / Register
+                    </button>
+                </div>
             </div>
         </div>
     </header>
@@ -1827,9 +2048,214 @@ Generated by 10X AI Job Search & Application Assistant
                 if (e.key === 'Escape') {
                     closeModal();
                     closeCompanyModal();
+                    closeAuthModal();
                 }
             });
+
+            // Close Auth modal on backdrop click
+            const authM = document.getElementById('authModal');
+            if (authM) {
+                authM.addEventListener('click', (e) => {
+                    if (e.target === authM) closeAuthModal();
+                });
+            }
+
+            // Init auth header state
+            updateAuthHeaderUI();
         });
+
+        // Authentication State & UI Logic
+        let currentUser = JSON.parse(localStorage.getItem('user_profile') || 'null');
+
+        function updateAuthHeaderUI() {
+            const area = document.getElementById('userProfileArea');
+            if (!area) return;
+            if (currentUser) {
+                const initials = currentUser.full_name ? currentUser.full_name.split(' ').map(n=>n[0]).join('').toUpperCase() : 'U';
+                area.innerHTML = `
+                    <div class="user-profile-badge">
+                        <div class="user-avatar">${initials}</div>
+                        <div>
+                            <span style="color: white; font-weight: 700;">${currentUser.full_name}</span>
+                            <span class="logout-link" onclick="handleLogout()">(Logout)</span>
+                        </div>
+                    </div>
+                `;
+            } else {
+                area.innerHTML = `
+                    <button class="auth-btn" onclick="openAuthModal('login')">
+                        <span>🔑</span> Login / Register
+                    </button>
+                `;
+            }
+        }
+
+        function openAuthModal(mode = 'login') {
+            const modal = document.getElementById('authModal');
+            if (modal) modal.classList.add('active');
+            switchAuthTab(mode);
+        }
+
+        function closeAuthModal() {
+            const modal = document.getElementById('authModal');
+            if (modal) modal.classList.remove('active');
+            const err = document.getElementById('authError');
+            if (err) err.style.display = 'none';
+        }
+
+        function switchAuthTab(mode) {
+            const err = document.getElementById('authError');
+            if (err) err.style.display = 'none';
+            if (mode === 'login') {
+                document.getElementById('tabLoginBtn').classList.add('active');
+                document.getElementById('tabRegisterBtn').classList.remove('active');
+                document.getElementById('loginForm').style.display = 'block';
+                document.getElementById('registerForm').style.display = 'none';
+                document.getElementById('authTitle').innerText = 'Welcome Back';
+                document.getElementById('authSubtitle').innerText = 'Sign in to access your saved job searches & application pipeline';
+            } else {
+                document.getElementById('tabRegisterBtn').classList.add('active');
+                document.getElementById('tabLoginBtn').classList.remove('active');
+                document.getElementById('registerForm').style.display = 'block';
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('authTitle').innerText = 'Create Account';
+                document.getElementById('authSubtitle').innerText = 'Sign up for free to save matches, applications & resume profiles';
+            }
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const errDiv = document.getElementById('authError');
+            errDiv.style.display = 'none';
+
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+                if (!res.ok) {
+                    errDiv.innerText = data.detail || 'Login failed';
+                    errDiv.style.display = 'block';
+                    return;
+                }
+                currentUser = data.user;
+                localStorage.setItem('user_profile', JSON.stringify(currentUser));
+                updateAuthHeaderUI();
+                closeAuthModal();
+                showToast(`Welcome back, ${currentUser.full_name}! 👋`);
+            } catch (err) {
+                errDiv.innerText = 'Connection error. Please try again.';
+                errDiv.style.display = 'block';
+            }
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            const full_name = document.getElementById('regFullName').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const target_role = document.getElementById('regTargetRole').value;
+            const errDiv = document.getElementById('authError');
+            errDiv.style.display = 'none';
+
+            try {
+                const res = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ full_name, email, password, target_role })
+                });
+                const data = await res.json();
+                if (!res.ok) {
+                    errDiv.innerText = data.detail || 'Registration failed';
+                    errDiv.style.display = 'block';
+                    return;
+                }
+                currentUser = data.user;
+                localStorage.setItem('user_profile', JSON.stringify(currentUser));
+                updateAuthHeaderUI();
+                closeAuthModal();
+                showToast(`Account created! Welcome, ${currentUser.full_name}! 🎉`);
+            } catch (err) {
+                errDiv.innerText = 'Connection error. Please try again.';
+                errDiv.style.display = 'block';
+            }
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            localStorage.removeItem('user_profile');
+            updateAuthHeaderUI();
+            showToast('Logged out successfully.');
+        }
     </script>
+
+    <!-- Authentication Modal -->
+    <div id="authModal" class="modal-overlay">
+        <div class="auth-card">
+            <button class="auth-close" onclick="closeAuthModal()">✕</button>
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <div style="font-size: 2.2rem; margin-bottom: 0.3rem;">🔐</div>
+                <h2 id="authTitle" style="font-family: 'Outfit', sans-serif; font-size: 1.6rem; font-weight: 800; color: white;">Welcome Back</h2>
+                <p id="authSubtitle" style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">Sign in to save your job searches & application pipeline</p>
+            </div>
+
+            <div class="auth-tabs">
+                <button id="tabLoginBtn" class="auth-tab active" onclick="switchAuthTab('login')">Sign In</button>
+                <button id="tabRegisterBtn" class="auth-tab" onclick="switchAuthTab('register')">Create Account</button>
+            </div>
+
+            <div id="authError" style="display: none; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #f87171; padding: 10px 14px; border-radius: 10px; font-size: 0.85rem; margin-bottom: 1.2rem; font-weight: 600;"></div>
+
+            <!-- Login Form -->
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="auth-input-group">
+                    <label>Email Address</label>
+                    <div class="auth-input-wrapper">
+                        <input type="email" id="loginEmail" class="auth-input" placeholder="candidate@example.com" required>
+                    </div>
+                </div>
+                <div class="auth-input-group">
+                    <label>Password</label>
+                    <div class="auth-input-wrapper">
+                        <input type="password" id="loginPassword" class="auth-input" placeholder="••••••••" required>
+                    </div>
+                </div>
+                <button type="submit" class="auth-submit-btn">Sign In to Dashboard ➔</button>
+            </form>
+
+            <!-- Register Form -->
+            <form id="registerForm" onsubmit="handleRegister(event)" style="display: none;">
+                <div class="auth-input-group">
+                    <label>Full Name</label>
+                    <div class="auth-input-wrapper">
+                        <input type="text" id="regFullName" class="auth-input" placeholder="Atul More" required>
+                    </div>
+                </div>
+                <div class="auth-input-group">
+                    <label>Email Address</label>
+                    <div class="auth-input-wrapper">
+                        <input type="email" id="regEmail" class="auth-input" placeholder="candidate@example.com" required>
+                    </div>
+                </div>
+                <div class="auth-input-group">
+                    <label>Password</label>
+                    <div class="auth-input-wrapper">
+                        <input type="password" id="regPassword" class="auth-input" placeholder="••••••••" required>
+                    </div>
+                </div>
+                <div class="auth-input-group">
+                    <label>Target Role / Domain</label>
+                    <div class="auth-input-wrapper">
+                        <input type="text" id="regTargetRole" class="auth-input" placeholder="Data Scientist / Software Engineer">
+                    </div>
+                </div>
+                <button type="submit" class="auth-submit-btn">Create Free Account 🚀</button>
+            </form>
+        </div>
+    </div>
 </body>
 </html>
