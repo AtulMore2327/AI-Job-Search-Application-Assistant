@@ -1412,54 +1412,69 @@ Projects:
         
 
         async function analyzeText() {
-            const text = document.getElementById('pasteText').value;
+            const text = document.getElementById('pasteText').value.trim();
             if(!text) return alert("Please paste resume text first!");
 
-            showToast("🔍 Analyzing resume text...");
-            let profile = null;
+            showToast("🔍 Analyzing pasted resume text dynamically...");
 
-            try {
-                const formData = new FormData();
-                formData.append("text", text);
-                const res = await fetch('/resume/analyze', { method: 'POST', body: formData });
-                if (res.ok) {
-                    profile = await res.json();
+            const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+            let name = "";
+            for (let line of lines.slice(0, 6)) {
+                if (line.toLowerCase().includes('@') || line.match(/\d{5}/) || line.toLowerCase().includes('resume') || line.toLowerCase().includes('curriculum')) continue;
+                const nameWords = line.match(/^([A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)+)/);
+                if (nameWords) {
+                    name = nameWords[1];
+                    break;
                 }
-            } catch(e) {
-                console.log("Backend offline, using Client-Side Text Parser");
+            }
+            if (!name) {
+                name = lines[0] ? lines[0].substring(0, 30).replace(/[^a-zA-Z\s]/g, '').trim() : "Candidate Profile";
             }
 
-            if (!profile || !profile.name) {
-                const nameMatch = text.match(/([A-Z][a-z]+\s+[A-Z][a-z]+)/);
-                const emailMatch = text.match(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
-                const phoneMatch = text.match(/(\+?\d{10,12})/);
-                const locMatch = text.match(/(Mumbai|Delhi|Bangalore|Bengaluru|Pune|Surat|Indore|Hyderabad|Chennai|Gurgaon|Noida|Kolkata|Ahmedabad|India)/i);
-                
-                const knownSkills = ["Python", "SQL", "JavaScript", "React", "Node.js", "Java", "C++", "Data Analysis", "Power BI", "Excel", "HTML", "CSS", "Git", "Machine Learning", "Pandas", "NumPy", "PostgreSQL", "Tableau"];
-                const foundSkills = knownSkills.filter(s => new RegExp('\\b' + s + '\\b', 'i').test(text));
+            const emailMatch = text.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+            const email = emailMatch ? emailMatch[0] : "";
 
-                profile = {
-                    name: nameMatch ? nameMatch[1] : "Candidate Profile",
-                    email: emailMatch ? emailMatch[1] : "candidate@example.com",
-                    phone: phoneMatch ? phoneMatch[1] : "+91 98765 43210",
-                    location: locMatch ? locMatch[1] : (document.getElementById('locInput')?.value || "India"),
-                    target_role: document.getElementById('roleInput')?.value || "Technical Professional",
-                    summary: text.length > 200 ? text.substring(0, 200) + "..." : text,
-                    skills: foundSkills.length > 0 ? foundSkills : ["Python", "SQL", "JavaScript", "Data Analysis", "Git"],
-                    tools: ["Excel", "VS Code", "Power BI"],
-                    education: [{ degree: "Bachelor's Degree in Technology / CS", institution: "University", year: "2024" }]
-                };
+            const phoneMatch = text.match(/(?:\+91[\s-]?)?[6-9]\d{9}/) || text.match(/(\+?\d{10,12})/);
+            const phone = phoneMatch ? phoneMatch[0] : "";
+
+            const locMatch = text.match(/(Mumbai|Delhi|Bangalore|Bengaluru|Pune|Surat|Indore|Hyderabad|Chennai|Gurgaon|Noida|Kolkata|Ahmedabad|Jaipur|Chandigarh|India)/i);
+            const location = locMatch ? locMatch[1] : (document.getElementById('locInput')?.value || "India");
+
+            const knownSkills = [
+                "Python", "SQL", "JavaScript", "React", "Node.js", "Java", "C++", "C#", 
+                "Data Analysis", "Power BI", "Excel", "HTML", "CSS", "Git", "Machine Learning", 
+                "Pandas", "NumPy", "PostgreSQL", "Tableau", "AWS", "Docker", "REST APIs", 
+                "Django", "Flask", "FastAPI", "MongoDB", "Looker Studio", "Google Colab", 
+                "Jupyter Notebook", "Matplotlib", "Seaborn", "Plotly", "Communication", "Teamwork"
+            ];
+            let skills = knownSkills.filter(s => new RegExp('\\b' + s + '\\b', 'i').test(text));
+            if (skills.length === 0) {
+                skills = ["Python", "SQL", "Data Analysis", "Communication"];
             }
+
+            const eduMatch = text.match(/(B\.Tech|B\.Sc|BCA|MCA|M\.Tech|Bachelor|Master|Diploma|Degree|Devi Ahilya|University)[^\n]*/i);
+            const eduText = eduMatch ? eduMatch[0] : "Degree / Qualification";
+
+            const profile = {
+                name: name,
+                email: email,
+                phone: phone,
+                location: location,
+                target_role: document.getElementById('roleInput')?.value || "Technical Professional",
+                summary: text.length > 220 ? text.substring(0, 220) + "..." : text,
+                skills: skills,
+                tools: skills.slice(0, 5),
+                education: [{ degree: eduText, institution: "University", year: "2024" }]
+            };
 
             showProfile(profile);
-            showToast("✓ Resume analyzed! Confirm location & click \"FIND MATCHING JOBS\".");
+            showToast(`✓ Analyzed text dynamically! Candidate: ${profile.name}`);
 
             const locIn = document.getElementById('locInput');
             if (locIn) {
                 locIn.focus();
                 locIn.select();
             }
-            if (event && event.target) event.target.value = '';
         }
 
         function showProfile(profile) {
