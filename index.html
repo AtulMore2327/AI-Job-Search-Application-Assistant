@@ -854,7 +854,7 @@
 
             <!-- Profile Summary Box -->
             <div id="profileBox" class="profile-result">
-                <div style="font-size: 0.8rem; font-weight: 800; color: var(--accent-green); text-transform: uppercase; margin-bottom: 8px;">✅ RESUME LOADED & PARSED SUCCESSFULLY</div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;"><div style="font-size: 0.8rem; font-weight: 800; color: var(--accent-green); text-transform: uppercase;">✅ RESUME PARSED & ACTIVE</div><button onclick="openEditProfileModal()" class="copy-btn" style="background: rgba(6, 182, 212, 0.2); border-color: rgba(6, 182, 212, 0.4); color: #38bdf8;">✏️ Edit My Details</button></div>
                 <div class="profile-header">
                     <div class="avatar" id="pAvatar">C</div>
                     <div>
@@ -1210,6 +1210,63 @@ ${candName}`
         }
 
         let activeCandidateLoaded = false;
+
+        function cleanCandidateNameFromFile(filename) {
+            let name = filename
+                .replace(/\.[^/.]+$/, "")
+                .replace(/\(\d+\)/g, "")
+                .replace(/[-_]/g, " ")
+                .replace(/\b(cv|resume|pdf|final|updated|docx|doc)\b/gi, "")
+                .trim();
+
+            name = name.toLowerCase().replace(/(?:^|\s|-)\S/g, function(a) { return a.toUpperCase(); });
+            return name || "Atul More";
+        }
+
+        let currentProfileData = null;
+
+        function openEditProfileModal() {
+            if (currentProfileData) {
+                document.getElementById('editName').value = currentProfileData.name || '';
+                document.getElementById('editEmail').value = (currentProfileData.email && !currentProfileData.email.includes('example.com')) ? currentProfileData.email : '';
+                document.getElementById('editPhone').value = (currentProfileData.phone && !currentProfileData.phone.includes('98765 43210')) ? currentProfileData.phone : '';
+                document.getElementById('editSkills').value = (currentProfileData.skills || []).join(', ');
+                document.getElementById('editEdu').value = document.getElementById('pEdu')?.innerText.replace('🎓 ', '') || '';
+            }
+            document.getElementById('editProfileModal').classList.add('active');
+        }
+
+        function closeEditProfileModal() {
+            document.getElementById('editProfileModal').classList.remove('active');
+        }
+
+        function saveEditedProfile() {
+            const newName = document.getElementById('editName').value.trim() || "Atul More";
+            const newEmail = document.getElementById('editEmail').value.trim();
+            const newPhone = document.getElementById('editPhone').value.trim();
+            const newSkillsRaw = document.getElementById('editSkills').value;
+            const newEdu = document.getElementById('editEdu').value.trim();
+
+            const newSkills = newSkillsRaw.split(',').map(s => s.trim()).filter(s => s.length > 0);
+
+            currentProfileData = {
+                ...(currentProfileData || {}),
+                name: newName,
+                email: newEmail,
+                phone: newPhone,
+                skills: newSkills.length > 0 ? newSkills : (currentProfileData?.skills || ["Python", "SQL", "Data Analysis"]),
+                summary: currentProfileData?.summary || "Candidate profile active in matching pipeline."
+            };
+
+            if (newEdu) {
+                currentProfileData.education = [{ degree: newEdu, institution: "University", year: "2024" }];
+            }
+
+            showProfile(currentProfileData);
+            closeEditProfileModal();
+            showToast("✅ Profile details updated successfully!");
+        }
+
         let currentLoadedFileName = null;
 
         function fillSampleResume() {
@@ -1405,17 +1462,23 @@ Projects:
 
         function showProfile(profile) {
             activeCandidateLoaded = true;
+            currentProfileData = profile;
             document.getElementById('profileBox').style.display = 'block';
             
-            const name = profile.name || "Candidate Profile";
+            let name = profile.name || "Atul More";
+            if (name.includes(".pdf") || name.toUpperCase().includes("RESUME") || name.includes("_")) {
+                name = cleanCandidateNameFromFile(name);
+            }
+            profile.name = name;
+
             document.getElementById('pName').innerText = name;
             document.getElementById('pAvatar').innerText = name.charAt(0).toUpperCase();
 
             let contactParts = [];
-            if(profile.email) contactParts.push("✉️ " + profile.email);
-            if(profile.phone) contactParts.push("📞 " + profile.phone);
+            if(profile.email && !profile.email.includes('example.com')) contactParts.push("✉️ " + profile.email);
+            if(profile.phone && !profile.phone.includes('98765 43210')) contactParts.push("📞 " + profile.phone);
             if(profile.location) contactParts.push("📍 " + profile.location);
-            document.getElementById('pContact').innerText = contactParts.join('  |  ') || "Profile Active";
+            document.getElementById('pContact').innerText = contactParts.join('  |  ') || "📍 " + (profile.location || "India");
 
             // Auto-populate Location and Role inputs from parsed candidate profile
             if (profile.location) {
@@ -2566,5 +2629,44 @@ Generated by 10X AI Job Search & Application Assistant
             </form>
         </div>
     </div>
+
+    <!-- Edit Candidate Profile Modal -->
+    <div class="modal" id="editProfileModal">
+        <div class="modal-box" style="max-width: 550px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; border-bottom: 1px solid var(--card-border); padding-bottom: 1rem;">
+                <div class="modal-title" style="font-size: 1.3rem; color: #38bdf8;">✏️ Edit Candidate Details</div>
+                <button onclick="closeEditProfileModal()" style="background: rgba(255,255,255,0.1); border: none; color: white; width: 32px; height: 32px; border-radius: 50%; font-size: 1.2rem; cursor: pointer;">&times;</button>
+            </div>
+            
+            <div style="display: flex; flex-direction: column; gap: 14px;">
+                <div>
+                    <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">FULL NAME</label>
+                    <input type="text" id="editName" class="input-field" placeholder="Atul Deepak More">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div>
+                        <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">EMAIL ADDRESS</label>
+                        <input type="email" id="editEmail" class="input-field" placeholder="atul.more@gmail.com">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">PHONE NUMBER</label>
+                        <input type="text" id="editPhone" class="input-field" placeholder="+91 98765 43210">
+                    </div>
+                </div>
+                <div>
+                    <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">SKILLS (COMMA SEPARATED)</label>
+                    <input type="text" id="editSkills" class="input-field" placeholder="Python, SQL, React, Data Analysis, Power BI, Excel">
+                </div>
+                <div>
+                    <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">DEGREE / EDUCATION</label>
+                    <input type="text" id="editEdu" class="input-field" placeholder="B.Tech in Computer Science / IT (2024)">
+                </div>
+                <button onclick="saveEditedProfile()" class="action-btn action-btn-primary" style="justify-content: center; margin-top: 8px; font-weight: 800; padding: 12px;">
+                    💾 Save My Real Profile Details
+                </button>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
