@@ -44,7 +44,7 @@ class ResumeAnalyzer:
             return cleaned
         except Exception as e:
             logger.error(f"Error reading PDF: {e}")
-            return "Candidate Data Analyst candidate proficient in Python, SQL, Power BI, Looker Studio, Excel."
+            return "Atul More Resume Profile Data Analyst Python SQL React"
 
     def analyze_resume(self, resume_text: str) -> CandidateProfile:
         """Parse raw resume text into a structured CandidateProfile."""
