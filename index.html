@@ -1318,8 +1318,8 @@ Projects:
                 if (!candidateName) {
                     candidateName = fileClean.toUpperCase() || "Candidate Profile";
                 }
-                if (!email) email = candidateName.toLowerCase().replace(/[^a-z0-9]/g, '') + "@gmail.com";
-                if (!phone) phone = "+91 98765 43210";
+                if (!email) email = "";
+                if (!phone) phone = "";
                 if (!location) location = document.getElementById('locInput')?.value || "India";
                 if (skills.length === 0) skills = ["Python", "SQL", "JavaScript", "React", "Data Analysis", "Git", "REST APIs"];
 
