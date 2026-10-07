@@ -833,7 +833,7 @@
 
             <!-- File Upload Section -->
             <div id="fileSection">
-                <div class="upload-box" onclick="document.getElementById('fileInput').click()">
+                <div class="upload-box" onclick="const fi = document.getElementById('fileInput'); fi.value = ''; fi.click();">
                     <div class="upload-icon">📂</div>
                     <div style="font-size: 1.1rem; font-weight: 700;">Click Here To Select PDF Resume File</div>
                     <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 6px;">Supports .pdf and .txt files • Automatically parses skills, education & experience</div>
@@ -1408,6 +1408,7 @@ Projects:
                 locIn.focus();
                 locIn.select();
             }
+            if (event && event.target) event.target.value = '';
         }
 
         async function analyzeText() {
@@ -1458,6 +1459,7 @@ Projects:
                 locIn.focus();
                 locIn.select();
             }
+            if (event && event.target) event.target.value = '';
         }
 
         function showProfile(profile) {
