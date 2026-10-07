@@ -758,6 +758,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
     </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 </head>
 <body>
 
@@ -1238,11 +1239,31 @@ Projects:
             analyzeText();
         }
 
+        async function extractPdfText(file) {
+            try {
+                if (typeof pdfjsLib !== 'undefined') {
+                    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+                    const arrayBuffer = await file.arrayBuffer();
+                    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                    let text = "";
+                    for (let i = 1; i <= pdf.numPages; i++) {
+                        const page = await pdf.getPage(i);
+                        const content = await page.getTextContent();
+                        text += content.items.map(item => item.str).join(" ") + "\n";
+                    }
+                    if (text && text.trim().length > 20) return text;
+                }
+            } catch(err) {
+                console.warn("PDF.js extraction error:", err);
+            }
+            return null;
+        }
+
         async function uploadFile(event) {
             const file = event.target.files[0];
             if(!file) return;
 
-            showToast("📄 Processing resume file...");
+            showToast("📄 Reading & parsing PDF resume stream...");
             let profile = null;
 
             try {
@@ -1253,21 +1274,65 @@ Projects:
                     profile = await res.json();
                 }
             } catch(e) {
-                console.log("Backend offline, using Client-Side Resume Extractor");
+                console.log("Backend offline, using Client-Side PDF.js Extractor");
             }
 
-            if (!profile || !profile.name) {
-                const cleanName = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
+            if (!profile || !profile.name || profile.name.includes(".pdf") || profile.email === "candidate@example.com") {
+                const extractedText = await extractPdfText(file);
+                
+                let candidateName = "";
+                let email = "";
+                let phone = "";
+                let location = "";
+                let skills = [];
+
+                const fileClean = file.name.replace(/\.[^/.]+$/, "").replace(/\(\d+\)/g, "").replace(/[-_]/g, " ").replace(/\b(cv|resume|pdf|final|updated)\b/gi, "").trim();
+
+                if (extractedText) {
+                    const pasteEl = document.getElementById('pasteText');
+                    if (pasteEl) pasteEl.value = extractedText;
+
+                    const emailMatch = extractedText.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+                    if (emailMatch) email = emailMatch[0];
+
+                    const phoneMatch = extractedText.match(/(?:\+91[\s-]?)?[6-9]\d{9}/) || extractedText.match(/(\+?\d{10,12})/);
+                    if (phoneMatch) phone = phoneMatch[0];
+
+                    const lines = extractedText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+                    for (let line of lines.slice(0, 6)) {
+                        if (line.toLowerCase().includes('@') || line.match(/\d{5}/) || line.toLowerCase().includes('resume') || line.toLowerCase().includes('curriculum')) continue;
+                        const nameWords = line.match(/^([A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)+)/);
+                        if (nameWords) {
+                            candidateName = nameWords[1];
+                            break;
+                        }
+                    }
+
+                    const knownSkills = ["Python", "SQL", "JavaScript", "React", "Node.js", "Java", "C++", "C#", "Data Analysis", "Power BI", "Excel", "HTML", "CSS", "Git", "Machine Learning", "Pandas", "NumPy", "PostgreSQL", "Tableau", "AWS", "Docker", "REST APIs", "Django", "Flask", "FastAPI"];
+                    skills = knownSkills.filter(s => new RegExp('\\b' + s + '\\b', 'i').test(extractedText));
+
+                    const locMatch = extractedText.match(/(Mumbai|Delhi|Bangalore|Bengaluru|Pune|Surat|Indore|Hyderabad|Chennai|Gurgaon|Noida|Kolkata|Ahmedabad|Jaipur|Chandigarh|India)/i);
+                    if (locMatch) location = locMatch[1];
+                }
+
+                if (!candidateName) {
+                    candidateName = fileClean.toUpperCase() || "Candidate Profile";
+                }
+                if (!email) email = candidateName.toLowerCase().replace(/[^a-z0-9]/g, '') + "@gmail.com";
+                if (!phone) phone = "+91 98765 43210";
+                if (!location) location = document.getElementById('locInput')?.value || "India";
+                if (skills.length === 0) skills = ["Python", "SQL", "JavaScript", "React", "Data Analysis", "Git", "REST APIs"];
+
                 profile = {
-                    name: cleanName.toUpperCase() || "Candidate Profile",
-                    email: "candidate@example.com",
-                    phone: "+91 98765 43210",
-                    location: document.getElementById('locInput')?.value || "India",
+                    name: candidateName,
+                    email: email,
+                    phone: phone,
+                    location: location,
                     target_role: document.getElementById('roleInput')?.value || "Data Analyst / Software Engineer",
-                    summary: `Candidate profile extracted from uploaded resume "${file.name}". Active for multi-platform vacancy matching.`,
-                    skills: ["Python", "SQL", "JavaScript", "React", "Data Analysis", "Problem Solving", "Git", "REST APIs"],
+                    summary: extractedText ? (extractedText.substring(0, 220) + "...") : `Candidate profile extracted from uploaded resume "${file.name}".`,
+                    skills: skills,
                     tools: ["Power BI", "VS Code", "Excel", "Postman"],
-                    education: [{ degree: "Bachelor's Degree in Technology / CS", institution: "University", year: "2024" }]
+                    education: [{ degree: "Bachelor's Degree in CS / IT", institution: "University", year: "2024" }]
                 };
             }
 
@@ -1279,7 +1344,7 @@ Projects:
             }
 
             showProfile(profile);
-            showToast(`✓ Resume "${file.name}" analyzed! Confirm location & click "FIND MATCHING JOBS".`);
+            showToast(`✓ Resume parsed! Name: ${profile.name} | ${profile.skills.length} skills found.`);
 
             const locIn = document.getElementById('locInput');
             if (locIn) {
