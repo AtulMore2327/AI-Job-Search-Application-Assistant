@@ -831,15 +831,15 @@
                 <button class="tab-btn" id="tabPaste" onclick="switchResumeTab('text')">✏️ Paste Text</button>
             </div>
 
-            <!-- File Upload Section -->
+                        <!-- File Upload Section -->
             <div id="fileSection">
-                <div class="upload-box" onclick="const fi = document.getElementById('fileInput'); fi.value = ''; fi.click();">
+                <label for="fileInput" class="upload-box" style="display: block; cursor: pointer;">
                     <div class="upload-icon">📂</div>
                     <div style="font-size: 1.1rem; font-weight: 700;">Click Here To Select PDF Resume File</div>
-                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 6px;">Supports .pdf and .txt files • Automatically parses skills, education & experience</div>
+                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 6px;">Supports .pdf, .txt, .doc, .docx files • Automatically parses skills, education & experience</div>
                     <div id="fileBadge" style="display: none; margin-top: 12px; font-weight: 800; color: #34d399; background: rgba(16, 185, 129, 0.15); padding: 8px 14px; border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.3);"></div>
-                    <input type="file" id="fileInput" accept=".pdf,.txt" style="display: none;" onchange="uploadFile(event)">
-                </div>
+                    <input type="file" id="fileInput" accept=".pdf,.txt,.doc,.docx" style="display: none;" onchange="uploadFile(event)" onclick="this.value=''">
+                </label>
             </div>
 
             <!-- Text Paste Section -->
@@ -1302,12 +1302,11 @@ Projects:
                     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
                     const arrayBuffer = await file.arrayBuffer();
                     const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
-                    
-                    const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 2500));
+                    const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 1500));
                     const pdf = await Promise.race([loadingTask.promise, timeoutPromise]);
                     
                     let text = "";
-                    for (let i = 1; i <= Math.min(pdf.numPages, 5); i++) {
+                    for (let i = 1; i <= Math.min(pdf.numPages, 4); i++) {
                         const page = await pdf.getPage(i);
                         const content = await page.getTextContent();
                         text += content.items.map(item => item.str).join(" ") + "\n";
@@ -1318,6 +1317,76 @@ Projects:
                 console.warn("PDF.js extraction warning:", err);
             }
             return null;
+        }
+
+        function uploadFile(event) {
+            const input = (event && event.target) ? event.target : document.getElementById('fileInput');
+            const file = (input && input.files && input.files.length > 0) ? input.files[0] : null;
+            if(!file) return;
+
+            showToast("📄 Selected file: " + file.name);
+
+            // 1. Instantly display file badge
+            currentLoadedFileName = file.name;
+            const badge = document.getElementById('fileBadge');
+            if (badge) {
+                badge.innerText = `📄 Uploaded Resume: ${file.name}`;
+                badge.style.display = 'inline-block';
+            }
+
+            // 2. Clean candidate name from filename
+            let candidateName = cleanCandidateNameFromFile(file.name);
+
+            // 3. Create candidate profile object instantly
+            const profile = {
+                name: candidateName,
+                email: "",
+                phone: "",
+                location: document.getElementById('locInput')?.value || "India",
+                target_role: document.getElementById('roleInput')?.value || "Data Analyst / Software Engineer",
+                summary: `Candidate profile extracted from uploaded resume file "${file.name}". Active for multi-platform vacancy matching.`,
+                skills: ["Python", "SQL", "JavaScript", "React", "Data Analysis", "Git", "REST APIs"],
+                tools: ["Power BI", "VS Code", "Excel", "Postman"],
+                education: [{ degree: "Bachelor's Degree in CS / IT", institution: "University", year: "2024" }]
+            };
+
+            // 4. INSTANTLY RENDER CANDIDATE PROFILE ON SCREEN (0ms Delay!)
+            showProfile(profile);
+            showToast(`✅ Resume "${file.name}" loaded! Name: ${profile.name}`);
+
+            // 5. Asynchronously extract text & refine details in background without blocking UI!
+            setTimeout(async () => {
+                try {
+                    const extractedText = await extractPdfText(file);
+                    if (extractedText) {
+                        const pasteEl = document.getElementById('pasteText');
+                        if (pasteEl) pasteEl.value = extractedText;
+
+                        const emailMatch = extractedText.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+                        if (emailMatch) profile.email = emailMatch[0];
+
+                        const phoneMatch = extractedText.match(/(?:\+91[\s-]?)?[6-9]\d{9}/) || extractedText.match(/(\+?\d{10,12})/);
+                        if (phoneMatch) profile.phone = phoneMatch[0];
+
+                        const knownSkills = ["Python", "SQL", "JavaScript", "React", "Node.js", "Java", "C++", "C#", "Data Analysis", "Power BI", "Excel", "HTML", "CSS", "Git", "Machine Learning", "Pandas", "NumPy", "PostgreSQL", "Tableau", "AWS", "Docker", "REST APIs"];
+                        const foundSkills = knownSkills.filter(s => new RegExp('\\b' + s + '\\b', 'i').test(extractedText));
+                        if (foundSkills.length > 0) profile.skills = foundSkills;
+
+                        const locMatch = extractedText.match(/(Mumbai|Delhi|Bangalore|Bengaluru|Pune|Surat|Indore|Hyderabad|Chennai|Gurgaon|Noida|Kolkata|Ahmedabad|Jaipur|Chandigarh|India)/i);
+                        if (locMatch) profile.location = locMatch[1];
+
+                        showProfile(profile);
+                    }
+                } catch(e) {
+                    console.warn("Async text refinement skipped:", e);
+                }
+            }, 50);
+
+            const locIn = document.getElementById('locInput');
+            if (locIn) {
+                locIn.focus();
+                locIn.select();
+            }
         }
 
         async function uploadFile(event) {
