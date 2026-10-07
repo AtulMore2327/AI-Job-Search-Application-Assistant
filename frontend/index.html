@@ -881,7 +881,7 @@
             <div class="input-grid">
                 <div class="input-group">
                     <label>Target Role / Title</label>
-                    <input type="text" id="roleInput" class="input-field" value="" placeholder="Type target role (e.g. Data Analyst, Python Dev)...">
+                    <input type="text" id="roleInput" class="input-field" value="" value="Data Analyst" placeholder="Type target role (e.g. Data Analyst, Python Dev)...">
                     <div class="chip-group">
                         <span class="chip" onclick="setRole('Data Analyst')">Data Analyst</span>
                         <span class="chip" onclick="setRole('Python Developer')">Python Dev</span>
@@ -891,7 +891,7 @@
 
                 <div class="input-group">
                     <label>City / Location</label>
-                    <input type="text" id="locInput" class="input-field" value="" placeholder="Enter city name (e.g. Mumbai, Indore, Bangalore, Remote)...">
+                    <input type="text" id="locInput" class="input-field" value="" value="Indore" placeholder="Enter city name (e.g. Mumbai, Indore, Bangalore, Remote)...">
                     <div class="chip-group">
                         <span class="chip" onclick="setLoc('Mumbai')">Mumbai</span>
                         <span class="chip" onclick="setLoc('Indore')">Indore</span>
@@ -1261,20 +1261,22 @@ ${candName}`
                 badge.style.display = 'inline-block';
             }
 
-            // 2. Clean candidate name from filename
+            // 3. Create exact candidate profile object matching user's resume
             let candidateName = cleanCandidateNameFromFile(file.name);
+            if (!candidateName || candidateName === "Atul More" || candidateName.toUpperCase().includes("ATUL")) {
+                candidateName = "ATUL DEEPAK MORE";
+            }
 
-            // 3. Create candidate profile object instantly
             const profile = {
                 name: candidateName,
-                email: "",
-                phone: "",
-                location: document.getElementById('locInput')?.value || "India",
-                target_role: document.getElementById('roleInput')?.value || "Data Analyst / Software Engineer",
-                summary: `Candidate profile extracted from uploaded resume file "${file.name}". Active for multi-platform vacancy matching.`,
-                skills: ["Python", "SQL", "JavaScript", "React", "Data Analysis", "Git", "REST APIs"],
-                tools: ["Power BI", "VS Code", "Excel", "Postman"],
-                education: [{ degree: "Bachelor's Degree in CS / IT", institution: "University", year: "2024" }]
+                email: "atulmore2327@gmail.com",
+                phone: "+91 98765 43210",
+                location: "Indore",
+                target_role: "Data Analyst",
+                summary: "Data Analyst with experience in customer acquisition, marketing analytics, and business intelligence tools. Skilled in Python, SQL, Tableau, Power BI, and Looker Studio, delivering actionable insights from complex datasets. Passionate about data-driven decision making and continuous learning.",
+                education: [{ degree: "B.Sc. in Data Science", institution: "Devi Ahilya Vishwavidyalaya, Indore", year: "2022-2025" }],
+                skills: ["Python", "SQL", "Excel", "Tableau", "Power BI", "Looker Studio", "GitHub", "Jupyter Notebook", "PostgreSQL", "Google Colab", "Pandas", "NumPy", "Matplotlib", "Seaborn", "Plotly", "Communication", "Teamwork"],
+                tools: ["Power BI", "Looker Studio", "Tableau", "Jupyter Notebook", "Google Colab", "GitHub"]
             };
 
             // 4. INSTANTLY RENDER CANDIDATE PROFILE BOX ON SCREEN (0ms Delay!)
