@@ -1081,7 +1081,7 @@
                 `Senior ${role}`,
                 `Lead ${role} Specialist`,
                 `Associate ${role}`,
-                `${role} - Data & AI Operations`,
+                `${role} - Operations & Strategy`,
                 `${role} (Hybrid / On-site)`
             ];
 
@@ -1089,13 +1089,20 @@
             const matches = [];
             const applications = [];
 
-            const candName = document.getElementById('pName')?.innerText || "Candidate";
+            const candName = currentProfileData?.name || document.getElementById('pName')?.innerText || "Candidate";
+            const candSkills = (currentProfileData && currentProfileData.skills && currentProfileData.skills.length > 0)
+                ? currentProfileData.skills
+                : [];
 
             for (let i = 0; i < 8; i++) {
                 const comp = companies[i % companies.length];
                 const title = jobTitles[i % jobTitles.length];
                 const jobId = `JOB-${1000 + i}`;
-                const matchScore = 85 + (i * 2) % 12;
+                
+                const matchedSkills = candSkills.length > 0 ? candSkills : ["Domain Knowledge"];
+                const missingSkills = candSkills.length > 0 ? ["Role Specific Advanced Certification"] : ["Key skills not extracted from resume"];
+                const matchScore = candSkills.length > 0 ? (82 + (i * 2) % 12) : 50;
+                const skillsSummary = candSkills.length > 0 ? candSkills.join(', ') : 'professional & domain experience';
 
                 const jobObj = {
                     job_id: jobId,
@@ -1106,7 +1113,7 @@
                     experience_level: exp || "Fresher / Entry Level",
                     hr_email: comp.hr,
                     canonical_url: comp.site,
-                    description: `We are actively hiring a skilled ${title} in ${loc}. Key responsibilities include working with modern tech stacks, data analysis, team collaboration, and delivering high quality technical solutions.`,
+                    description: `We are actively hiring a qualified ${title} in ${loc}. Key responsibilities include domain execution, client communication, team collaboration, and professional service delivery.`,
                     sources: [
                         { platform: "LinkedIn", url: `https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(title)}&location=${encodeURIComponent(loc)}` },
                         { platform: "Naukri", url: `https://www.naukri.com/${title.toLowerCase().replace(/[^a-z0-9]/g, '-')}-jobs-in-${loc.toLowerCase()}` }
@@ -1117,8 +1124,8 @@
                     job_id: jobId,
                     match_score: matchScore,
                     skill_gap: {
-                        matched_skills: ["Python", "SQL", "Data Analysis", "JavaScript", "Problem Solving"],
-                        missing_skills: ["Advanced Cloud Architecture", "Docker"]
+                        matched_skills: matchedSkills,
+                        missing_skills: missingSkills
                     }
                 };
 
@@ -1128,36 +1135,9 @@
                     match_score: matchScore,
                     package: {
                         email_subject: `Application for ${title} Position - ${candName}`,
-                        hr_email_body: `Dear Hiring Manager at ${comp.name},
-
-I am writing to express my strong interest in the ${title} position in ${loc}. With my technical background, proficiency in Python, SQL, Data Analysis, and Web Development, I am confident in my ability to add immediate value to your team at ${comp.name}.
-
-I look forward to discussing how my skills align with your current requirements.
-
-Best regards,
-${candName}
-Email: candidate@example.com | Phone: +91 98765 43210`,
-                        cover_letter: `DEAR HIRING MANAGER AT ${comp.name.toUpperCase()},
-
-APPLICATION FOR THE POSITION OF: ${title.toUpperCase()}
-
-I am excited to submit my candidate profile for the ${title} role located in ${loc}. My technical training and hands-on project experience in data analytics, software development, and problem solving prepare me to contribute effectively to ${comp.name}.
-
-Key Strengths & Qualifications:
-• Expertise in Python, SQL, JavaScript, React, and Data Visualization.
-• Strong analytical mindset with experience building end-to-end data pipelines and web applications.
-• Proven ability to collaborate in fast-paced technical environments.
-
-Thank you for considering my application. I welcome the opportunity for an interview.
-
-Sincerely,
-${candName}`,
-                        linkedin_message: `Dear Hiring Team at ${comp.name},
-
-I recently submitted my application for the ${title} role in ${loc}. I would love to connect and share how my technical skill set can support your team's goals.
-
-Best regards,
-${candName}`
+                        hr_email_body: `Dear Hiring Manager at ${comp.name},\n\nI am writing to express my strong interest in the ${title} position in ${loc}. With my background and proficiency in ${skillsSummary}, I am confident in my ability to add immediate value to your team at ${comp.name}.\n\nI look forward to discussing how my qualifications align with your requirements.\n\nBest regards,\n${candName}\nEmail: ${currentProfileData?.email || 'candidate@example.com'} | Phone: ${currentProfileData?.phone || ''}`,
+                        cover_letter: `DEAR HIRING MANAGER AT ${comp.name.toUpperCase()},\n\nAPPLICATION FOR THE POSITION OF: ${title.toUpperCase()}\n\nI am excited to submit my candidate profile for the ${title} role located in ${loc}. My training and background in ${skillsSummary} prepare me to contribute effectively to ${comp.name}.\n\nKey Strengths & Qualifications:\n• Expertise in ${skillsSummary}.\n• Strong professional mindset with hands-on domain experience.\n• Proven ability to collaborate effectively in fast-paced environments.\n\nThank you for considering my application. I welcome the opportunity for an interview.\n\nSincerely,\n${candName}`,
+                        linkedin_message: `Dear Hiring Team at ${comp.name},\n\nI recently submitted my application for the ${title} role in ${loc}. I would love to connect and share how my skill set in ${skillsSummary} can support your team's goals.\n\nBest regards,\n${candName}`
                     }
                 };
 
@@ -1327,23 +1307,50 @@ ${candName}`
                         const phoneMatch = extractedText.match(/(?:\+91[\s-]?)?[6-9]\d{9}/) || extractedText.match(/(\+?\d{10,12})/);
                         profile.phone = phoneMatch ? phoneMatch[0] : "";
 
-                        // Extract Skills dynamically (strictly from text)
+                        // Extract Skills dynamically (strictly from text & bullet points)
                         const knownSkills = [
                             "Python", "SQL", "JavaScript", "React", "Node.js", "Java", "C++", "C#", 
                             "Data Analysis", "Power BI", "Excel", "HTML", "CSS", "Git", "Machine Learning", 
                             "Pandas", "NumPy", "PostgreSQL", "Tableau", "AWS", "Docker", "REST APIs",
                             "Django", "Flask", "FastAPI", "MongoDB", "Looker Studio", "Google Colab", 
-                            "Jupyter Notebook", "Matplotlib", "Seaborn", "Plotly", "Communication", "Teamwork"
+                            "Jupyter Notebook", "Matplotlib", "Seaborn", "Plotly",
+                            // Pharmacy & Healthcare & General
+                            "Pharmaceutical Knowledge", "Pharmaceutical", "Pharmacy", "Pharmacology", "Clinical Research",
+                            "Drug Safety", "Healthcare", "Medical Detailing", "Doctor Detailing", "Chemistry", "Quality Control",
+                            "Quality Assurance", "Regulatory Affairs", "Pharmacovigilance", "Medical Sales",
+                            "Communication Skills", "Communication", "Computer Skills", "Time Management", "Teamwork",
+                            "Problem Solving", "Sales", "Marketing", "MS Office", "Project Management", "Customer Support"
                         ];
-                        const foundSkills = knownSkills.filter(s => new RegExp('\\b' + s.replace(/\+/g, '\\+') + '\\b', 'i').test(extractedText));
+                        const foundSkills = [];
+                        knownSkills.forEach(s => {
+                            const regex = new RegExp('\\b' + s.replace(/\+/g, '\\+').replace(/\s+/g, '\\s+') + '\\b', 'i');
+                            if (regex.test(extractedText) && !foundSkills.some(x => x.toLowerCase() === s.toLowerCase())) {
+                                foundSkills.push(s);
+                            }
+                        });
+
+                        // Also extract bullet points under KEY SKILLS / SKILLS heading
+                        const skillsSectionMatch = extractedText.match(/(?:KEY SKILLS|SKILLS|CORE COMPETENCIES|STRENGTHS)[\s\S]*?(?=\n\s*\n[A-Z\s]{4,}|\n[A-Z\s]{4,}:|$)/i);
+                        if (skillsSectionMatch) {
+                            const sectionText = skillsSectionMatch[0];
+                            const lines = sectionText.split('\n');
+                            for (let l of lines) {
+                                l = l.replace(/^[\s•\-\*]+/, '').trim();
+                                if (l && l.length > 2 && l.length < 50 && !l.toUpperCase().includes("SKILLS") && !l.toUpperCase().includes("EXPERIENCE") && !l.toUpperCase().includes("EDUCATION")) {
+                                    if (!foundSkills.some(x => x.toLowerCase() === l.toLowerCase())) {
+                                        foundSkills.push(l);
+                                    }
+                                }
+                            }
+                        }
                         profile.skills = foundSkills;
 
                         // Extract Location dynamically
                         const locMatch = extractedText.match(/(Mumbai|Delhi|Bangalore|Bengaluru|Pune|Surat|Indore|Hyderabad|Chennai|Gurgaon|Noida|Kolkata|Ahmedabad|Jaipur|Chandigarh|Vadodara|Nagpur|Bhopal|Lucknow|India)/i);
                         if (locMatch) profile.location = locMatch[1];
 
-                        // Extract Education dynamically
-                        const eduMatch = extractedText.match(/(B\.Tech|B\.Sc|BCA|MCA|M\.Tech|Bachelor|Master|Diploma|Degree|Ph\.D|B\.E|MBA|B\.Com|B\.A|University|College|Institute)[^\n]*/i);
+                        // Extract Education dynamically (Including B.Pharmacy / Healthcare degrees)
+                        const eduMatch = extractedText.match(/(B\.Pharmacy|B\.Pharm|D\.Pharmacy|D\.Pharm|M\.Pharmacy|M\.Pharm|B\.Tech|B\.Sc|BCA|MCA|M\.Tech|Bachelor|Master|Diploma|Degree|Ph\.D|B\.E|MBA|B\.Com|B\.A|University|College|Institute)[^\n]*/i);
                         if (eduMatch) {
                             profile.education = [{ degree: eduMatch[0].trim(), institution: "", year: "" }];
                         } else {
