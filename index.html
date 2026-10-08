@@ -1406,9 +1406,12 @@
                         }
                         profile.skills = foundSkills;
 
-                        // Extract Location dynamically
-                        const locMatch = extractedText.match(/(Mumbai|Delhi|Bangalore|Bengaluru|Pune|Surat|Indore|Hyderabad|Chennai|Gurgaon|Noida|Kolkata|Ahmedabad|Jaipur|Chandigarh|Vadodara|Nagpur|Bhopal|Lucknow|India)/i);
-                        if (locMatch) profile.location = locMatch[1];
+                        // Extract Location dynamically (strictly from top contact header, ignoring project descriptions)
+                        const headerText = lines.slice(0, 10).join('\n');
+                        const locMatch = headerText.match(/(?:Location|Address|City|Place)?[:\s-]*\b(Mumbai|Delhi|Bangalore|Bengaluru|Pune|Surat|Indore|Hyderabad|Chennai|Gurgaon|Noida|Kolkata|Ahmedabad|Jaipur|Chandigarh|Vadodara|Nagpur|Bhopal|Lucknow|India)\b/i);
+                        if (locMatch) {
+                            profile.location = locMatch[1];
+                        }
 
                         // Extract Education dynamically (Including B.Pharmacy / Healthcare degrees)
                         const eduMatch = extractedText.match(/(B\.Pharmacy|B\.Pharm|D\.Pharmacy|D\.Pharm|M\.Pharmacy|M\.Pharm|B\.Tech|B\.Sc|BCA|MCA|M\.Tech|Bachelor|Master|Diploma|Degree|Ph\.D|B\.E|MBA|B\.Com|B\.A|University|College|Institute)[^\n]*/i);
