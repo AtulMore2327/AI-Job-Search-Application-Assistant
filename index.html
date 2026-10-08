@@ -1062,19 +1062,80 @@
         // ==========================================
         // CLIENT-SIDE VACANCY & ENGINE GENERATOR
         // ==========================================
-        function generateClientSideJobs(role, loc, mode, exp) {
-            const companies = [
-                { name: "Deloitte", hr: "careers@deloitte.com", site: "https://www.deloitte.com/careers" },
+        function getCompaniesForRole(role) {
+            const r = (role || '').toLowerCase();
+
+            // 1. Pharmacy / Medical / Healthcare / Bio / Clinical / MR
+            if (r.includes('mr') || r.includes('medical') || r.includes('pharma') || r.includes('drug') || r.includes('health') || r.includes('clinical') || r.includes('doctor') || r.includes('nurse') || r.includes('lab') || r.includes('chem')) {
+                return [
+                    { name: "Sun Pharmaceutical Industries", hr: "careers@sunpharma.com", site: "https://www.sunpharma.com/careers" },
+                    { name: "Cipla Healthcare", hr: "careers@cipla.com", site: "https://www.cipla.com/careers" },
+                    { name: "Lupin Pharmaceuticals", hr: "careers@lupin.com", site: "https://www.lupin.com/careers" },
+                    { name: "Dr. Reddy's Laboratories", hr: "careers@drreddys.com", site: "https://www.drreddys.com/careers" },
+                    { name: "Mankind Pharma", hr: "careers@mankindpharma.com", site: "https://www.mankindpharma.com/careers" },
+                    { name: "Torrent Pharmaceuticals", hr: "careers@torrentpharma.com", site: "https://www.torrentpharma.com/careers" },
+                    { name: "Alkem Laboratories", hr: "careers@alkem.com", site: "https://www.alkemlabs.com/careers" },
+                    { name: "Abbott Healthcare India", hr: "careers@abbott.com", site: "https://www.abbott.co.in/careers.html" },
+                    { name: "Zydus Lifesciences", hr: "careers@zyduslife.com", site: "https://www.zyduslife.com/careers" },
+                    { name: "GlaxoSmithKline (GSK India)", hr: "careers@gsk.com", site: "https://www.gsk.com/careers" }
+                ];
+            }
+
+            // 2. Finance / Banking / Accounts / Audit / Tax
+            if (r.includes('account') || r.includes('finance') || r.includes('bank') || r.includes('audit') || r.includes('tax') || r.includes('ca') || r.includes('tally') || r.includes('gst')) {
+                return [
+                    { name: "HDFC Bank", hr: "careers@hdfcbank.com", site: "https://www.hdfcbank.com/careers" },
+                    { name: "ICICI Bank", hr: "careers@icicibank.com", site: "https://www.icicibank.com/careers" },
+                    { name: "Axis Bank", hr: "careers@axisbank.com", site: "https://www.axisbank.com/careers" },
+                    { name: "Ernst & Young (EY India)", hr: "careers@ey.com", site: "https://www.ey.com/careers" },
+                    { name: "KPMG India", hr: "careers@kpmg.com", site: "https://home.kpmg/in/en/home/careers.html" },
+                    { name: "PricewaterhouseCoopers (PwC)", hr: "careers@pwc.com", site: "https://www.pwc.in/careers.html" },
+                    { name: "Deloitte India", hr: "careers@deloitte.com", site: "https://www.deloitte.com/careers" },
+                    { name: "State Bank of India (SBI)", hr: "careers@sbi.co.in", site: "https://bank.sbi/web/careers" }
+                ];
+            }
+
+            // 3. Mechanical / Civil / Electrical / Construction / Automobile / Manufacturing
+            if (r.includes('mechanic') || r.includes('civil') || r.includes('electric') || r.includes('site') || r.includes('construct') || r.includes('auto') || r.includes('manufactur') || r.includes('plant') || r.includes('production')) {
+                return [
+                    { name: "Larsen & Toubro (L&T)", hr: "careers@larsentoubro.com", site: "https://www.larsentoubro.com/careers" },
+                    { name: "Tata Motors", hr: "careers@tatamotors.com", site: "https://www.tatamotors.com/careers" },
+                    { name: "Mahindra & Mahindra", hr: "careers@mahindra.com", site: "https://www.mahindra.com/careers" },
+                    { name: "Bosch India", hr: "careers@bosch.com", site: "https://www.bosch.in/careers" },
+                    { name: "Siemens India", hr: "careers@siemens.com", site: "https://www.siemens.com/in/en/company/jobs.html" },
+                    { name: "BHEL (Bharat Heavy Electricals)", hr: "careers@bhel.in", site: "https://www.bhel.com/careers" },
+                    { name: "Tata Steel", hr: "careers@tatasteel.com", site: "https://www.tatasteel.com/careers" }
+                ];
+            }
+
+            // 4. Sales / Marketing / Business Development / Retail / FMCG
+            if (r.includes('sales') || r.includes('market') || r.includes('business dev') || r.includes('bde') || r.includes('bdm') || r.includes('retail') || r.includes('store') || r.includes('digital market')) {
+                return [
+                    { name: "Hindustan Unilever (HUL)", hr: "careers@hul.com", site: "https://www.hul.co.in/careers" },
+                    { name: "Nestlé India", hr: "careers@nestle.com", site: "https://www.nestle.in/jobs" },
+                    { name: "ITC Limited", hr: "careers@itc.in", site: "https://www.itcportal.com/careers" },
+                    { name: "Britannia Industries", hr: "careers@britannia.co.in", site: "https://britannia.co.in/careers" },
+                    { name: "Marico", hr: "careers@marico.com", site: "https://marico.com/india/careers" },
+                    { name: "Flipkart", hr: "careers@flipkart.com", site: "https://www.flipkartcareers.com" },
+                    { name: "Zomato", hr: "careers@zomato.com", site: "https://www.zomato.com/careers" }
+                ];
+            }
+
+            // 5. Default IT & Technology Companies
+            return [
                 { name: "TCS (Tata Consultancy Services)", hr: "careers@tcs.com", site: "https://www.tcs.com/careers" },
+                { name: "Infosys", hr: "careers@infosys.com", site: "https://www.infosys.com/careers" },
+                { name: "Wipro", hr: "careers@wipro.com", site: "https://www.wipro.com/careers" },
+                { name: "Deloitte", hr: "careers@deloitte.com", site: "https://www.deloitte.com/careers" },
                 { name: "Teleperformance", hr: "careers.india@teleperformance.com", site: "https://www.teleperformance.com/careers" },
                 { name: "Impetus Technologies", hr: "careers@impetus.com", site: "https://www.impetus.com/careers" },
                 { name: "Yash Technologies", hr: "careers@yashtech.com", site: "https://www.yashtech.com/careers" },
-                { name: "Webkul Software", hr: "jobs@webkul.com", site: "https://webkul.com/careers" },
-                { name: "Systematix Infotech", hr: "careers@systematix.com", site: "https://systematixinfotech.com/careers" },
-                { name: "Flipkart", hr: "careers@flipkart.com", site: "https://www.flipkartcareers.com" },
-                { name: "Zomato", hr: "careers@zomato.com", site: "https://www.zomato.com/careers" },
-                { name: "GeeksforGeeks", hr: "careers@geeksforgeeks.org", site: "https://www.geeksforgeeks.org/careers" }
+                { name: "Systematix Infotech", hr: "careers@systematix.com", site: "https://systematixinfotech.com/careers" }
             ];
+        }
+
+        function generateClientSideJobs(role, loc, mode, exp) {
+            const companies = getCompaniesForRole(role);
 
             const jobTitles = [
                 `${role}`,
