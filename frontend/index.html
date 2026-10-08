@@ -1283,7 +1283,7 @@ ${candName}`
             // 2. Clean candidate name from filename
             let candidateName = cleanCandidateNameFromFile(file.name);
 
-            // 3. Create initial candidate profile object (No hardcoded personal emails!)
+            // 3. Create initial candidate profile object (No hardcoded or fake fallback skills!)
             const profile = {
                 name: candidateName,
                 email: "",
@@ -1291,8 +1291,8 @@ ${candName}`
                 location: document.getElementById('locInput')?.value || "India",
                 target_role: document.getElementById('roleInput')?.value || "Data Analyst",
                 summary: `Resume uploaded (${file.name}). Extracting candidate details...`,
-                education: [{ degree: "Qualification / Education", institution: "", year: "" }],
-                skills: ["Data Analysis"],
+                education: [],
+                skills: [],
                 tools: []
             };
 
@@ -1327,7 +1327,7 @@ ${candName}`
                         const phoneMatch = extractedText.match(/(?:\+91[\s-]?)?[6-9]\d{9}/) || extractedText.match(/(\+?\d{10,12})/);
                         profile.phone = phoneMatch ? phoneMatch[0] : "";
 
-                        // Extract Skills dynamically
+                        // Extract Skills dynamically (strictly from text)
                         const knownSkills = [
                             "Python", "SQL", "JavaScript", "React", "Node.js", "Java", "C++", "C#", 
                             "Data Analysis", "Power BI", "Excel", "HTML", "CSS", "Git", "Machine Learning", 
@@ -1336,7 +1336,7 @@ ${candName}`
                             "Jupyter Notebook", "Matplotlib", "Seaborn", "Plotly", "Communication", "Teamwork"
                         ];
                         const foundSkills = knownSkills.filter(s => new RegExp('\\b' + s.replace(/\+/g, '\\+') + '\\b', 'i').test(extractedText));
-                        if (foundSkills.length > 0) profile.skills = foundSkills;
+                        profile.skills = foundSkills;
 
                         // Extract Location dynamically
                         const locMatch = extractedText.match(/(Mumbai|Delhi|Bangalore|Bengaluru|Pune|Surat|Indore|Hyderabad|Chennai|Gurgaon|Noida|Kolkata|Ahmedabad|Jaipur|Chandigarh|Vadodara|Nagpur|Bhopal|Lucknow|India)/i);
@@ -1346,15 +1346,26 @@ ${candName}`
                         const eduMatch = extractedText.match(/(B\.Tech|B\.Sc|BCA|MCA|M\.Tech|Bachelor|Master|Diploma|Degree|Ph\.D|B\.E|MBA|B\.Com|B\.A|University|College|Institute)[^\n]*/i);
                         if (eduMatch) {
                             profile.education = [{ degree: eduMatch[0].trim(), institution: "", year: "" }];
+                        } else {
+                            profile.education = [];
                         }
 
                         // Extract Summary
                         if (extractedText.length > 50) {
                             profile.summary = extractedText.substring(0, 220).replace(/\s+/g, ' ').trim() + "...";
+                        } else {
+                            profile.summary = "Resume profile active in pipeline matching.";
                         }
 
                         showProfile(profile);
                         showToast(`✅ Resume analyzed! Candidate: ${profile.name}`);
+                    } else {
+                        // File could not be parsed into text (e.g. image file)
+                        profile.summary = "⚠️ Could not extract readable text from this file format (e.g. Image/Scanned PDF). Please upload a PDF or TXT resume with readable text.";
+                        profile.skills = [];
+                        profile.education = [];
+                        showProfile(profile);
+                        showToast("⚠️ Could not extract text from file", "warning");
                     }
                 } catch(e) {
                     console.warn("Async text refinement error:", e);
@@ -1501,13 +1512,9 @@ Projects:
                 "Django", "Flask", "FastAPI", "MongoDB", "Looker Studio", "Google Colab", 
                 "Jupyter Notebook", "Matplotlib", "Seaborn", "Plotly", "Communication", "Teamwork"
             ];
-            let skills = knownSkills.filter(s => new RegExp('\\b' + s + '\\b', 'i').test(text));
-            if (skills.length === 0) {
-                skills = ["Python", "SQL", "Data Analysis", "Communication"];
-            }
+            let skills = knownSkills.filter(s => new RegExp('\\b' + s.replace(/\+/g, '\\+') + '\\b', 'i').test(text));
 
-            const eduMatch = text.match(/(B\.Tech|B\.Sc|BCA|MCA|M\.Tech|Bachelor|Master|Diploma|Degree|Devi Ahilya|University)[^\n]*/i);
-            const eduText = eduMatch ? eduMatch[0] : "Degree / Qualification";
+            const eduMatch = text.match(/(B\.Tech|B\.Sc|BCA|MCA|M\.Tech|Bachelor|Master|Diploma|Degree|University|College|Institute)[^\n]*/i);
 
             const profile = {
                 name: name,
@@ -1518,7 +1525,7 @@ Projects:
                 summary: text.length > 220 ? text.substring(0, 220) + "..." : text,
                 skills: skills,
                 tools: skills.slice(0, 5),
-                education: [{ degree: eduText, institution: "University", year: "2024" }]
+                education: eduMatch ? [{ degree: eduMatch[0].trim(), institution: "", year: "" }] : []
             };
 
             showProfile(profile);
@@ -1578,12 +1585,16 @@ Projects:
             } else if(profile.summary) {
                 eduText = profile.summary;
             }
-            document.getElementById('pEdu').innerText = eduText;
+            document.getElementById('pEdu').innerText = eduText || "🎓 Education not specified in resume";
             document.getElementById('pSummary').innerText = profile.summary || "Candidate profile active in pipeline matching.";
 
             const allSkills = [...(profile.skills || []), ...(profile.tools || [])];
             const uniqueSkills = allSkills.filter((s, idx, self) => self.findIndex(x => x.toLowerCase() === s.toLowerCase()) === idx);
-            document.getElementById('pSkills').innerHTML = uniqueSkills.map(s => `<span class="skill-tag">${s}</span>`).join('');
+            if (uniqueSkills.length > 0) {
+                document.getElementById('pSkills').innerHTML = uniqueSkills.map(s => `<span class="skill-tag">${s}</span>`).join('');
+            } else {
+                document.getElementById('pSkills').innerHTML = `<span class="skill-tag" style="background: rgba(239, 68, 68, 0.2); color: #f87171; border-color: rgba(239, 68, 68, 0.4);">No skills detected in resume</span>`;
+            }
         }
 
         async function findJobs() {
