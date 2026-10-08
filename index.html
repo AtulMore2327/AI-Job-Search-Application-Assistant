@@ -1165,6 +1165,9 @@
                 const matchScore = candSkills.length > 0 ? (82 + (i * 2) % 12) : 50;
                 const skillsSummary = candSkills.length > 0 ? candSkills.join(', ') : 'professional & domain experience';
 
+                const roleSlug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+                const locSlug = loc.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
                 const jobObj = {
                     job_id: jobId,
                     title: title,
@@ -1177,7 +1180,12 @@
                     description: `We are actively hiring a qualified ${title} in ${loc}. Key responsibilities include domain execution, client communication, team collaboration, and professional service delivery.`,
                     sources: [
                         { platform: "LinkedIn", url: `https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(title)}&location=${encodeURIComponent(loc)}` },
-                        { platform: "Naukri", url: `https://www.naukri.com/${title.toLowerCase().replace(/[^a-z0-9]/g, '-')}-jobs-in-${loc.toLowerCase()}` }
+                        { platform: "Naukri", url: `https://www.naukri.com/${roleSlug}-jobs-in-${locSlug}` },
+                        { platform: "Indeed", url: `https://in.indeed.com/jobs?q=${encodeURIComponent(title)}&l=${encodeURIComponent(loc)}` },
+                        { platform: "Glassdoor", url: `https://www.glassdoor.co.in/Job/jobs.htm?sc.keyword=${encodeURIComponent(title)}&locKeyword=${encodeURIComponent(loc)}` },
+                        { platform: "Shine", url: `https://www.shine.com/job-search/${roleSlug}-jobs-in-${locSlug}` },
+                        { platform: "TimesJobs", url: `https://www.timesjobs.com/candidate/job-search.html?searchType=personalizedSearch&from=submit&txtKeywords=${encodeURIComponent(title)}&txtLocation=${encodeURIComponent(loc)}` },
+                        { platform: "Foundit", url: `https://www.foundit.in/srp/results?query=${encodeURIComponent(title)}&locations=${encodeURIComponent(loc)}` }
                     ]
                 };
 
