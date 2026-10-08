@@ -1223,30 +1223,49 @@ ${candName}`
         // ==========================================
         // SINGLE UNIFIED RESUME UPLOADER & EXTRACTOR
         // ==========================================
-        async function extractPdfText(file) {
-            try {
-                if (typeof pdfjsLib !== 'undefined') {
-                    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-                    const arrayBuffer = await file.arrayBuffer();
-                    const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
-                    const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 1500));
-                    const pdf = await Promise.race([loadingTask.promise, timeoutPromise]);
-                    
-                    let text = "";
-                    for (let i = 1; i <= Math.min(pdf.numPages, 5); i++) {
-                        const page = await pdf.getPage(i);
-                        const content = await page.getTextContent();
-                        text += content.items.map(item => item.str).join(" ") + "\n";
+        async function extractTextFromFile(file) {
+            if (!file) return null;
+            
+            // 1. Try PDF parsing if PDF
+            if (file.type === "application/pdf" || file.name.toLowerCase().includes(".pdf")) {
+                try {
+                    if (typeof pdfjsLib !== 'undefined') {
+                        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+                        const arrayBuffer = await file.arrayBuffer();
+                        const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+                        const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 8000));
+                        const pdf = await Promise.race([loadingTask.promise, timeoutPromise]);
+                        
+                        let text = "";
+                        for (let i = 1; i <= Math.min(pdf.numPages, 10); i++) {
+                            const page = await pdf.getPage(i);
+                            const content = await page.getTextContent();
+                            text += content.items.map(item => item.str).join(" ") + "\n";
+                        }
+                        if (text && text.trim().length > 10) return text;
                     }
-                    if (text && text.trim().length > 20) return text;
+                } catch(err) {
+                    console.warn("PDF.js extraction warning:", err);
                 }
-            } catch(err) {
-                console.warn("PDF.js extraction warning:", err);
             }
+
+            // 2. Try plain text reading fallback
+            try {
+                const text = await new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => resolve(e.target.result);
+                    reader.onerror = () => resolve(null);
+                    reader.readAsText(file);
+                });
+                if (text && text.trim().length > 10) return text;
+            } catch(err) {
+                console.warn("FileReader error:", err);
+            }
+
             return null;
         }
 
-        function uploadFile(event) {
+        async function uploadFile(event) {
             const input = (event && event.target) ? event.target : document.getElementById('fileInput');
             const file = (input && input.files && input.files.length > 0) ? input.files[0] : null;
             if(!file) return;
@@ -1261,53 +1280,84 @@ ${candName}`
                 badge.style.display = 'inline-block';
             }
 
-            // 3. Create exact candidate profile object matching user's resume
+            // 2. Clean candidate name from filename
             let candidateName = cleanCandidateNameFromFile(file.name);
-            if (!candidateName || candidateName === "Atul More" || candidateName.toUpperCase().includes("ATUL")) {
-                candidateName = "ATUL DEEPAK MORE";
-            }
 
+            // 3. Create initial candidate profile object (No hardcoded personal emails!)
             const profile = {
                 name: candidateName,
-                email: "atulmore2327@gmail.com",
-                phone: "+91 98765 43210",
-                location: "Indore",
-                target_role: "Data Analyst",
-                summary: "Data Analyst with experience in customer acquisition, marketing analytics, and business intelligence tools. Skilled in Python, SQL, Tableau, Power BI, and Looker Studio, delivering actionable insights from complex datasets. Passionate about data-driven decision making and continuous learning.",
-                education: [{ degree: "B.Sc. in Data Science", institution: "Devi Ahilya Vishwavidyalaya, Indore", year: "2022-2025" }],
-                skills: ["Python", "SQL", "Excel", "Tableau", "Power BI", "Looker Studio", "GitHub", "Jupyter Notebook", "PostgreSQL", "Google Colab", "Pandas", "NumPy", "Matplotlib", "Seaborn", "Plotly", "Communication", "Teamwork"],
-                tools: ["Power BI", "Looker Studio", "Tableau", "Jupyter Notebook", "Google Colab", "GitHub"]
+                email: "",
+                phone: "",
+                location: document.getElementById('locInput')?.value || "India",
+                target_role: document.getElementById('roleInput')?.value || "Data Analyst",
+                summary: `Resume uploaded (${file.name}). Extracting candidate details...`,
+                education: [{ degree: "Qualification / Education", institution: "", year: "" }],
+                skills: ["Data Analysis"],
+                tools: []
             };
 
-            // 4. INSTANTLY RENDER CANDIDATE PROFILE BOX ON SCREEN (0ms Delay!)
+            // 4. INSTANTLY RENDER CANDIDATE PROFILE BOX ON SCREEN
             showProfile(profile);
             showToast(`✅ Resume "${file.name}" loaded! Name: ${profile.name}`);
 
-            // 5. Asynchronously extract text & refine details in background without blocking UI!
+            // 5. Asynchronously extract text & refine details in background without blocking UI
             setTimeout(async () => {
                 try {
-                    const extractedText = await extractPdfText(file);
-                    if (extractedText) {
+                    const extractedText = await extractTextFromFile(file);
+                    if (extractedText && extractedText.trim().length > 10) {
                         const pasteEl = document.getElementById('pasteText');
                         if (pasteEl) pasteEl.value = extractedText;
 
+                        // Try extracting name from top lines of text
+                        const lines = extractedText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+                        for (let line of lines.slice(0, 5)) {
+                            if (line.toLowerCase().includes('@') || line.match(/\d{5}/) || line.toLowerCase().includes('resume') || line.toLowerCase().includes('curriculum')) continue;
+                            const nameMatch = line.match(/^([A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)+)/);
+                            if (nameMatch && nameMatch[1].length > 3 && nameMatch[1].length < 35) {
+                                profile.name = nameMatch[1];
+                                break;
+                            }
+                        }
+
+                        // Extract Email dynamically
                         const emailMatch = extractedText.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
-                        if (emailMatch) profile.email = emailMatch[0];
+                        profile.email = emailMatch ? emailMatch[0] : "";
 
+                        // Extract Phone dynamically
                         const phoneMatch = extractedText.match(/(?:\+91[\s-]?)?[6-9]\d{9}/) || extractedText.match(/(\+?\d{10,12})/);
-                        if (phoneMatch) profile.phone = phoneMatch[0];
+                        profile.phone = phoneMatch ? phoneMatch[0] : "";
 
-                        const knownSkills = ["Python", "SQL", "JavaScript", "React", "Node.js", "Java", "C++", "C#", "Data Analysis", "Power BI", "Excel", "HTML", "CSS", "Git", "Machine Learning", "Pandas", "NumPy", "PostgreSQL", "Tableau", "AWS", "Docker", "REST APIs"];
-                        const foundSkills = knownSkills.filter(s => new RegExp('\\b' + s + '\\b', 'i').test(extractedText));
+                        // Extract Skills dynamically
+                        const knownSkills = [
+                            "Python", "SQL", "JavaScript", "React", "Node.js", "Java", "C++", "C#", 
+                            "Data Analysis", "Power BI", "Excel", "HTML", "CSS", "Git", "Machine Learning", 
+                            "Pandas", "NumPy", "PostgreSQL", "Tableau", "AWS", "Docker", "REST APIs",
+                            "Django", "Flask", "FastAPI", "MongoDB", "Looker Studio", "Google Colab", 
+                            "Jupyter Notebook", "Matplotlib", "Seaborn", "Plotly", "Communication", "Teamwork"
+                        ];
+                        const foundSkills = knownSkills.filter(s => new RegExp('\\b' + s.replace(/\+/g, '\\+') + '\\b', 'i').test(extractedText));
                         if (foundSkills.length > 0) profile.skills = foundSkills;
 
-                        const locMatch = extractedText.match(/(Mumbai|Delhi|Bangalore|Bengaluru|Pune|Surat|Indore|Hyderabad|Chennai|Gurgaon|Noida|Kolkata|Ahmedabad|Jaipur|Chandigarh|India)/i);
+                        // Extract Location dynamically
+                        const locMatch = extractedText.match(/(Mumbai|Delhi|Bangalore|Bengaluru|Pune|Surat|Indore|Hyderabad|Chennai|Gurgaon|Noida|Kolkata|Ahmedabad|Jaipur|Chandigarh|Vadodara|Nagpur|Bhopal|Lucknow|India)/i);
                         if (locMatch) profile.location = locMatch[1];
 
+                        // Extract Education dynamically
+                        const eduMatch = extractedText.match(/(B\.Tech|B\.Sc|BCA|MCA|M\.Tech|Bachelor|Master|Diploma|Degree|Ph\.D|B\.E|MBA|B\.Com|B\.A|University|College|Institute)[^\n]*/i);
+                        if (eduMatch) {
+                            profile.education = [{ degree: eduMatch[0].trim(), institution: "", year: "" }];
+                        }
+
+                        // Extract Summary
+                        if (extractedText.length > 50) {
+                            profile.summary = extractedText.substring(0, 220).replace(/\s+/g, ' ').trim() + "...";
+                        }
+
                         showProfile(profile);
+                        showToast(`✅ Resume analyzed! Candidate: ${profile.name}`);
                     }
                 } catch(e) {
-                    console.warn("Async text refinement skipped:", e);
+                    console.warn("Async text refinement error:", e);
                 }
             }, 50);
 
@@ -1319,15 +1369,19 @@ ${candName}`
         }
 
         function cleanCandidateNameFromFile(filename) {
+            if (!filename) return "Candidate Profile";
             let name = filename
-                .replace(/\.[^/.]+$/, "")
+                .replace(/\.(pdf|docx?|txt)$/gi, "")
+                .replace(/\.(pdf|docx?|txt)$/gi, "")
                 .replace(/\(\d+\)/g, "")
+                .replace(/\b\d{4}[-_]\d{2}[-_]\d{2}\b/g, "")
                 .replace(/[-_]/g, " ")
-                .replace(/\b(cv|resume|pdf|final|updated|docx|doc)\b/gi, "")
+                .replace(/\b(cv|resume|pdf|final|updated|docx|doc|flowcv)\b/gi, "")
+                .replace(/\s+/g, " ")
                 .trim();
 
             name = name.toLowerCase().replace(/(?:^|\s|-)\S/g, function(a) { return a.toUpperCase(); });
-            return name || "Atul More";
+            return name || "Candidate Profile";
         }
 
         let currentProfileData = null;
@@ -1336,7 +1390,7 @@ ${candName}`
             if (currentProfileData) {
                 document.getElementById('editName').value = currentProfileData.name || '';
                 document.getElementById('editEmail').value = (currentProfileData.email && !currentProfileData.email.includes('example.com')) ? currentProfileData.email : '';
-                document.getElementById('editPhone').value = (currentProfileData.phone && !currentProfileData.phone.includes('98765 43210')) ? currentProfileData.phone : '';
+                document.getElementById('editPhone').value = currentProfileData.phone || '';
                 document.getElementById('editSkills').value = (currentProfileData.skills || []).join(', ');
                 document.getElementById('editEdu').value = document.getElementById('pEdu')?.innerText.replace('🎓 ', '') || '';
             }
@@ -1348,7 +1402,7 @@ ${candName}`
         }
 
         function saveEditedProfile() {
-            const newName = document.getElementById('editName').value.trim() || "Atul More";
+            const newName = document.getElementById('editName').value.trim() || "Candidate Profile";
             const newEmail = document.getElementById('editEmail').value.trim();
             const newPhone = document.getElementById('editPhone').value.trim();
             const newSkillsRaw = document.getElementById('editSkills').value;
@@ -1366,7 +1420,7 @@ ${candName}`
             };
 
             if (newEdu) {
-                currentProfileData.education = [{ degree: newEdu, institution: "University", year: "2024" }];
+                currentProfileData.education = [{ degree: newEdu, institution: "", year: "" }];
             }
 
             showProfile(currentProfileData);
@@ -1482,7 +1536,7 @@ Projects:
             currentProfileData = profile;
             document.getElementById('profileBox').style.display = 'block';
             
-            let name = profile.name || "Atul More";
+            let name = profile.name || "Candidate Profile";
             if (name.includes(".pdf") || name.toUpperCase().includes("RESUME") || name.includes("_")) {
                 name = cleanCandidateNameFromFile(name);
             }
@@ -1493,7 +1547,7 @@ Projects:
 
             let contactParts = [];
             if(profile.email && !profile.email.includes('example.com')) contactParts.push("✉️ " + profile.email);
-            if(profile.phone && !profile.phone.includes('98765 43210')) contactParts.push("📞 " + profile.phone);
+            if(profile.phone) contactParts.push("📞 " + profile.phone);
             if(profile.location) contactParts.push("📍 " + profile.location);
             document.getElementById('pContact').innerText = contactParts.join('  |  ') || "📍 " + (profile.location || "India");
 

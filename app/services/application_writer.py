@@ -84,7 +84,7 @@ class ApplicationWriter:
             return self._fallback_generate(candidate, job)
 
     def _fallback_generate(self, candidate: CandidateProfile, job: JobPosting) -> GeneratedApplication:
-        name = candidate.name or "Atul Deepak More"
+        name = candidate.name or "Candidate"
         role = job.title or "Data Analyst"
         company = job.company or "Tech Company"
         skills = ", ".join(candidate.skills[:4]) or "Python, SQL, Power BI, Looker Studio"
